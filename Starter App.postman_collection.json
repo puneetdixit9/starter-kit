@@ -305,6 +305,38 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3OTMwNDQ4MSwianRpIjoiMjc5MjM5ZjAtNTI4Ny00MTBjLWFjYTEtZThiM2E4ZGUyZmYyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjozfSwibmJmIjoxNjc5MzA0NDgxLCJleHAiOjE2NzkzMDQ1MTF9.T2fYGfRPqO892AjIwtDCd1pkFie_BR9YJdjfY49xdNI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/logout",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [

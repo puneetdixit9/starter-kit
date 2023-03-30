@@ -169,6 +169,18 @@ Response
 }
 ```
 
+9. Logout using delete API http://127.0.0.1:5000/logout
+```text
+curl --location --request DELETE 'http://127.0.0.1:5000/logout' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY4MDE4MTY3NywianRpIjoiZGVjYzQ2NWQtNzUzNC00YTFiLWE4Y2UtMThjZjg5YTUyNDI2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjoxfSwibmJmIjoxNjgwMTgxNjc3LCJleHAiOjE2ODAyMDMyNzd9.wWfl9HFmoJzyuH5vk7wTi1SblsDrbZTzqfpGs6QaEjE'
+```
+Response
+```json
+{
+    "msg": "Access token successfully revoked"
+}
+```
+
 ## Unit testing
 1. Auth routers unit testing 
 ```commandline
