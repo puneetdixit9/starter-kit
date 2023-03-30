@@ -1,0 +1,7 @@
+# Default ignored files
+/shelf/
+**xml
+*/venv/*
+*.pyc
+**/.idea/workspace.xml
+**/.idea/tasks.xml
