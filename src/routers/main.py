@@ -3,7 +3,6 @@ from src.managers import ROLE
 from flask import request, jsonify
 
 from src.decorators.user_role import allowed_roles
-from marshmallow import ValidationError
 from flask_jwt_extended import jwt_required
 
 from src.schema_validators.main import (
@@ -12,6 +11,8 @@ from src.schema_validators.main import (
 )
 from src.managers import MainManager
 from src.managers import AuthManager
+from src.utils import get_data_from_request_or_raise_validation_error
+
 
 
 main_router = Blueprint('main', __name__)
@@ -26,13 +27,7 @@ def server_status():
 @jwt_required()
 @allowed_roles([ROLE.USER.value])  # Allowed for User role type.
 def add_address():
-    data = request.json
-    schema = AddAddressSchema()
-    try:
-        data = schema.load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 400
-    
+    data = get_data_from_request_or_raise_validation_error(AddAddressSchema)
     return MainManager.add_address(data)
 
 
@@ -55,13 +50,7 @@ def get_addresses():
 @jwt_required()
 @allowed_roles([ROLE.USER.value])
 def update_address():
-    data = request.json
-    schema = UpdateAddressSchema()
-    try:
-        data = schema.load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 400
-    
+    data = get_data_from_request_or_raise_validation_error(UpdateAddressSchema)
     return MainManager.update_address(data, AuthManager.get_current_user())
 
 

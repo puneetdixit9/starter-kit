@@ -2,6 +2,8 @@
 /shelf/
 **xml
 */venv/*
+*/logs/*
 *.pyc
+*.log
 **/.idea/workspace.xml
 **/.idea/tasks.xml

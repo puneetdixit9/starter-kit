@@ -1,5 +1,5 @@
-from unit_testing.test_utils import get_signup_data, get_login_data, get_update_password_data
-from unit_testing.router_base_test import BaseRouterTest
+from integration_tests.test_utils import get_signup_data, get_login_data, get_update_password_data
+from integration_tests.router_base_test import BaseRouterTest
 
 
 class AuthRouterTest(BaseRouterTest):
@@ -24,7 +24,7 @@ class AuthRouterTest(BaseRouterTest):
         # again signup with same email
         response = self.app.post("/signup", json=signup_data)
         self.assertEqual(response.status_code, 409)  # user already exists
-        self.assertEqual(response.data, b'User already exists. Please Log in.')
+        self.assertEqual("user already exists with provided username", response.json["error"])
 
     def test_login_success(self):
         self.signup()
@@ -38,7 +38,7 @@ class AuthRouterTest(BaseRouterTest):
         login_data["email"] = "wrongemail@gmail.com"
         response = self.app.post("/login", json=login_data)
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.data, b'User does not exist with provided email')
+        self.assertEqual('user not found with wrongemail@gmail.com', response.json["error"])
 
     def test_change_password_success(self):
         access_token = self.login()["access_token"]

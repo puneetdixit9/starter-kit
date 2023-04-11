@@ -3,7 +3,7 @@ import settings
 import unittest
 from src.database import db as _db
 from server import get_app
-from unit_testing.test_utils import get_signup_data, get_login_data
+from integration_tests.test_utils import get_signup_data, get_login_data
 
 
 class BaseRouterTest(unittest.TestCase):
@@ -19,8 +19,8 @@ class BaseRouterTest(unittest.TestCase):
         with BaseRouterTest.app.app_context():
             _db.engine.dispose()
         path = os.getcwd()
-        if "unit_testing" in path:
-            path = path.replace("unit_testing", "")
+        if "integration_tests" in path:
+            path = path.replace("integration_tests", "")
 
         os.remove(path+'\\instance\\test_db.sqlite')
 

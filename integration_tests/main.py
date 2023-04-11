@@ -1,5 +1,5 @@
-from unit_testing.test_utils import add_address_data
-from unit_testing.router_base_test import BaseRouterTest
+from integration_tests.test_utils import add_address_data
+from integration_tests.router_base_test import BaseRouterTest
 
 
 class MainRouterTest(BaseRouterTest):

@@ -1,13 +1,6 @@
-import settings
 from flask import jsonify
 
-from src.database.models.auth import User, TokenBlocklist
-from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
-    get_jwt_identity,
-    get_jwt
-)
+from flask_jwt_extended import get_jwt_identity
 from src.database import db
 from src.database.models.main import Address
 from src.utils import update_class_object
@@ -62,7 +55,7 @@ class MainManager:
     def delete_address(cls, address_id, current_user):
         address = cls.get_address_by_address_id(address_id)
         if not address:
-            return jsonify(error='address_id not found'), 403
+            return jsonify(error='address_id not found'), 404
         
         if address.user_id != current_user.id:
             return jsonify(error='Unauthorized User!!'), 401

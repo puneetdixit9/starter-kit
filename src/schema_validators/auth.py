@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields, validates_schema, ValidationError
-from marshmallow.validate import Length, ContainsOnly
+from marshmallow.validate import Length, ContainsOnly, OneOf
 
 
 class SignUpSchema(Schema):
@@ -7,7 +7,7 @@ class SignUpSchema(Schema):
     last_name = fields.String()
     username = fields.String(required=True)
     email = fields.Email(required=True)
-    role = fields.String(required=True)
+    role = fields.String(required=True, validate=OneOf(["user", "admin"]))
     password = fields.String(required=True, validate=Length(min=8))
     gender = fields.String(validate=ContainsOnly(["male", "female", "other"]))
     address = fields.String()

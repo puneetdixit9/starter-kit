@@ -38,7 +38,7 @@ class AuthManager:
         user_by_username = User.query.filter_by(username=user_data["username"]).first()
         if user_by_email or user_by_username:
             param = "username" if user_by_username else "email"
-            error_data["msg"] = f"user already exists with provided {param}"
+            error_data["error"] = f"user already exists with provided {param}"
         else:
             user_data["password"] = generate_password_hash(user_data["password"])
             user = User(**user_data)
@@ -71,7 +71,7 @@ class AuthManager:
         user = db.session.query(User).filter(
             (User.email == email_or_username) | (User.username == email_or_username)).first()
         if not user:
-            return {"msg": f"user not found with {email_or_username}"}, 403
+            return {"error": f"user not found with {email_or_username}"}, 403
 
         if check_password_hash(user.password, login_data['password']):
             access_token = create_access_token(identity={"user_id": user.id})
@@ -81,14 +81,15 @@ class AuthManager:
                 "refresh_token": refresh_token,
                 "expire_in": settings.TOKEN_EXPIRE_IN * 60
             }, 200
-        return {"msg": "wrong password"}, 403
+        return {"error": "wrong password"}, 403
     
     @classmethod
     def logout(cls):
         token = get_jwt()
         jti = token["jti"]
         ttype = token["type"]
-        db.session.add(TokenBlocklist(jti=jti, type=ttype))
+        user = cls.get_current_user()
+        db.session.add(TokenBlocklist(jti=jti, type=ttype, user_id=user.id))
         db.session.commit()
         return jsonify(msg=f"{ttype.capitalize()} token successfully revoked")
 
@@ -99,7 +100,7 @@ class AuthManager:
         return token is not None
 
     @classmethod
-    def refersh_access_token(cls):
+    def refresh_access_token(cls):
         identity = get_jwt_identity()
         access_token = create_access_token(identity=identity)
         return jsonify(access_token=access_token, expire_in=60 * settings.TOKEN_EXPIRE_IN)

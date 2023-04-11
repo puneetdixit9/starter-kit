@@ -2,7 +2,7 @@ def get_signup_data():
     return {
         "email": "puneet@gmail.com",
         "password": "12345678",
-        "name": "Puneet",
+        "username": "Puneet",
         "role": "user"
     }
 
