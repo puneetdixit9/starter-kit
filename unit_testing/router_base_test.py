@@ -1,7 +1,8 @@
 import os
 import settings
 import unittest
-from project import get_app, db as _db
+from src.database import db as _db
+from server import get_app
 from unit_testing.test_utils import get_signup_data, get_login_data
 
 

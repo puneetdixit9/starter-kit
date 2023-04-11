@@ -1,5 +1,6 @@
-from project import get_app, db
+from src.database import db
 import settings
+from server import get_app
 
 app = get_app(settings.CONFIG)
 

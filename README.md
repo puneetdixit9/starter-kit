@@ -129,7 +129,7 @@ curl --location --request PUT 'http://127.0.0.1:5000/address' \
 Response
 ```json
 {
-    "message": "Success"
+    "message": "success"
 }
 ```
 7. Get list of address using GET API http://127.0.0.1:5000/addresses
@@ -165,7 +165,7 @@ curl --location --request DELETE 'http://127.0.0.1:5000/address/1' \
 Response
 ```json
 {
-    "message": "Success"
+    "message": "success"
 }
 ```
 

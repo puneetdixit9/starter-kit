@@ -1,6 +1,7 @@
 import unittest
 
-from project.models.user_models import User, Address
+from src.database.models.auth import User
+from src.database.models.main import Address
 from datetime import datetime
 
 
@@ -8,7 +9,7 @@ class ModelsTests(unittest.TestCase):
 
     def test_user_model(self):
         user_data = {
-            "name": "Puneet",
+            "username": "Puneet",
             "role": "admin",
             "email": "puneet@gmail.com",
             "password": "1234",
