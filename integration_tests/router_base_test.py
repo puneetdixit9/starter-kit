@@ -1,16 +1,17 @@
 import os
-import settings
 import unittest
-from src.database import db as _db
+
+import settings
+from integration_tests.test_utils import get_login_data, get_signup_data
 from server import get_app
-from integration_tests.test_utils import get_signup_data, get_login_data
+from src.database import db as _db
 
 
 class BaseRouterTest(unittest.TestCase):
     app = get_app(settings.TEST_CONFIG)
 
     def setUp(self):
-        self.app.config['TESTING'] = True
+        self.app.config["TESTING"] = True
         self.app = BaseRouterTest.app.test_client()
         with BaseRouterTest.app.app_context():
             _db.create_all()
@@ -22,7 +23,7 @@ class BaseRouterTest(unittest.TestCase):
         if "integration_tests" in path:
             path = path.replace("integration_tests", "")
 
-        os.remove(path+'\\instance\\test_db.sqlite')
+        os.remove(path + "\\instance\\test_db.sqlite")
 
     def signup(self):
         signup_data = get_signup_data()

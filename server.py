@@ -1,21 +1,22 @@
-import settings
 import logging
 import os
 
 from flask import Flask
 from flask_cors import CORS
+
+import settings
+from src.custom_exceptions import CUSTOM_EXCEPTIONS
+from src.custom_exceptions.exception_handlers import handle_exception
 from src.database import db
 from src.managers import jwt
 from src.routers import APP_BLUEPRINTS
-from src.custom_exceptions import CUSTOM_EXCEPTIONS
-from src.custom_exceptions.exception_handlers import handle_exception
 
-if not os.path.exists('logs'):
-    os.makedirs('logs')
+if not os.path.exists("logs"):
+    os.makedirs("logs")
 
-handler = logging.FileHandler('logs/flask.log')
+handler = logging.FileHandler("logs/flask.log")
 handler.setLevel(logging.ERROR)
-handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s'))
+handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s: %(message)s"))
 
 
 def get_app(config):

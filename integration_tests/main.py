@@ -1,14 +1,12 @@
-from integration_tests.test_utils import add_address_data
 from integration_tests.router_base_test import BaseRouterTest
+from integration_tests.test_utils import add_address_data
 
 
 class MainRouterTest(BaseRouterTest):
-
     def get_headers(self):
         access_token = self.login()["access_token"]
-        return {
-            "Authorization": f"Bearer {access_token}"
-        }
+
+        return {"Authorization": f"Bearer {access_token}"}
 
     def test_add_address_success(self):
         address = add_address_data()

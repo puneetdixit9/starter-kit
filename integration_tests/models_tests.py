@@ -1,12 +1,11 @@
 import unittest
+from datetime import datetime
 
 from src.database.models.auth import User
 from src.database.models.main import Address
-from datetime import datetime
 
 
 class ModelsTests(unittest.TestCase):
-
     def test_user_model(self):
         user_data = {
             "username": "Puneet",
@@ -21,7 +20,7 @@ class ModelsTests(unittest.TestCase):
         self.assertEqual(user.password, "1234")
 
     def test_address_model(self):
-        created_time = datetime.utcnow(),
+        created_time = (datetime.utcnow(),)
         address_data = {
             "country": "India",
             "house_no_and_street": "74, ward 4",
@@ -29,11 +28,11 @@ class ModelsTests(unittest.TestCase):
             "pin_code": 121106,
             "type": "home",
             "created_at": created_time,
-            "user_id": 1
+            "user_id": 1,
         }
 
         address = Address(**address_data)
-    
+
         self.assertEqual(address.country, "India")
         self.assertEqual(address.house_no_and_street, "74, ward 4")
         self.assertEqual(address.landmark, "Near govt school")

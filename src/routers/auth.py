@@ -1,21 +1,19 @@
-from src.schema_validators.auth import (
-    SignUpSchema, 
-    LogInSchema, 
-    UpdateProfile, 
-    UpdatePassword
-)
-from flask import Blueprint
-
-from flask import request, jsonify
+from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-from src.utils import get_data_from_request_or_raise_validation_error
 
 from src.managers import AuthManager
+from src.schema_validators.auth import (
+    LogInSchema,
+    SignUpSchema,
+    UpdatePassword,
+    UpdateProfile,
+)
+from src.utils import get_data_from_request_or_raise_validation_error
 
-auth_router = Blueprint('auth', __name__)
+auth_router = Blueprint("auth", __name__)
 
 
-@auth_router.route('/signup', methods=["POST"])
+@auth_router.route("/signup", methods=["POST"])
 def signup():
     data = get_data_from_request_or_raise_validation_error(SignUpSchema, request.json)
     user, error_data = AuthManager.create_new_user(data)
@@ -24,20 +22,20 @@ def signup():
     return jsonify(id=user.id), 201
 
 
-@auth_router.route('/login', methods=['POST'])
+@auth_router.route("/login", methods=["POST"])
 def login():
     data = get_data_from_request_or_raise_validation_error(LogInSchema, request.json)
     token, status_code = AuthManager.get_token(data)
     return jsonify(token), status_code
 
 
-@auth_router.route('/refresh', methods=['GET'])
+@auth_router.route("/refresh", methods=["GET"])
 @jwt_required(refresh=True)
 def refresh():
     return AuthManager.refresh_access_token()
 
 
-@auth_router.route('/profile', methods=['GET', 'PUT'])
+@auth_router.route("/profile", methods=["GET", "PUT"])
 @jwt_required()
 def profile():
     if request.method == "GET":
@@ -47,7 +45,7 @@ def profile():
     return jsonify(status="success"), 200
 
 
-@auth_router.route('/change_password', methods=['PUT'])
+@auth_router.route("/change_password", methods=["PUT"])
 @jwt_required()
 def change_password():
     data = get_data_from_request_or_raise_validation_error(UpdatePassword, request.json)
