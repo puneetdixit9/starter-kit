@@ -1,6 +1,6 @@
 from flask_jwt_extended import JWTManager
 
-from src.managers import AuthManager
+from src.managers.auth import AuthManager
 
 jwt = JWTManager()
 

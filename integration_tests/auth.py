@@ -17,7 +17,7 @@ class AuthRouterTest(BaseRouterTest):
         signup_data["password"] = "123"
         response = self.app.post("/signup", json=signup_data)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json["password"][0], "Shorter than minimum length 8.")
+        self.assertEqual(response.json["error"], "{'password': ['Shorter than minimum length 8.']}")
 
     def test_signup_user_already_exists(self):
         signup_data = get_signup_data()

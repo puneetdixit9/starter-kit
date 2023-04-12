@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 
-from src.managers import AuthManager
+from src.managers.auth import AuthManager
 from src.schema_validators.auth import (
     LogInSchema,
     SignUpSchema,

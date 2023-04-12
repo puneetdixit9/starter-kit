@@ -8,7 +8,7 @@ import settings
 from src.custom_exceptions import CUSTOM_EXCEPTIONS
 from src.custom_exceptions.exception_handlers import handle_exception
 from src.database import db
-from src.managers import jwt
+from src.managers.jwt import jwt
 from src.routers import APP_BLUEPRINTS
 
 if not os.path.exists("logs"):
