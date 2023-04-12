@@ -5,3 +5,6 @@ PyJWT~=2.6.0
 Werkzeug~=2.2.3
 flask-jwt-extended==4.4.4
 flask-cors==3.0.10
+flake8==6.0.0
+pre-commit==3.2.2
+black==23.3.0
