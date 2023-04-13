@@ -1,36 +1,38 @@
-# from unittest import TestCase, mock
+from flask_jwt_extended import create_access_token, verify_jwt_in_request
 
-# from src.decorators.user_role import allowed_roles
+from src.decorators.user_role import allowed_roles
+from tests.unit_testing.base_unit_test import BaseUnitTest
 
 
-# class TestAllowedRolesDecorator(TestCase):
+class TestAllowedRolesDecorator(BaseUnitTest):
+    @allowed_roles(["user"])
+    def user_view(self):
+        return "success"
 
-#     def setUp(self):
-#         self.mock_request = mock.MagicMock()
-#         self.mock_request.headers = {"Authorization": "Bearer token"}
+    @allowed_roles(["admin"])
+    def admin_view(self):
+        return "success"
 
-#     @allowed_roles(["admin"])
-#     def mock_view(self):
-#         return "success"
+    def test_allowed_roles_decorator_with_valid_role(self):
+        user, headers = self.get_user_and_headers()
+        with self.app.test_request_context(headers=headers):
+            verify_jwt_in_request()
+            response = self.admin_view()
+            self.assertEqual({"error": "Unauthorized User!!"}, response[0].json)
+            self.assertEqual(401, response[1])
 
-#     def test_allowed_roles_decorator_with_valid_role(self):
-#         with mock.patch("src.decorators.auth.User.query") as mock_query:
-#             mock_user = mock.MagicMock()
-#             mock_user.role = "admin"
-#             mock_query.filter_by().first.return_value = mock_user
-#             response = self.mock_view(self.mock_request)
-#             self.assertEqual(response, "success")
+    def test_allowed_roles_decorator_with_unauthorized_user(self):
+        user, headers = self.get_user_and_headers()
+        with self.app.test_request_context(headers=headers):
+            verify_jwt_in_request()
+            response = self.user_view()
+            self.assertEqual(response, "success")
 
-#     def test_allowed_roles_decorator_with_invalid_role(self):
-#         with mock.patch("src.decorators.auth.User.query") as mock_query:
-#             mock_user = mock.MagicMock()
-#             mock_user.role = "user"
-#             mock_query.filter_by().first.return_value = mock_user
-#             response = self.mock_view(self.mock_request)
-#             self.assertEqual(response.status_code, 401)
-
-#     def test_allowed_roles_decorator_with_nonexistent_user(self):
-#         with mock.patch("src.decorators.auth.User.query") as mock_query:
-#             mock_query.filter_by().first.return_value = None
-#             response = self.mock_view(self.mock_request)
-#             self.assertEqual(response.status_code, 403)
+    def test_allowed_roles_decorator_with_invalid_access_token(self):
+        invalid_access_token = create_access_token(identity={"user_id": 999})
+        headers = {"Authorization": f"Bearer {invalid_access_token}"}
+        with self.app.test_request_context(headers=headers):
+            verify_jwt_in_request()
+            response = self.user_view()
+            self.assertEqual({"error": "User Not Found !!"}, response[0].json)
+            self.assertEqual(403, response[1])
