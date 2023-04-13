@@ -1,3 +1,9 @@
+import os
+
+if not os.path.exists("logs"):
+    os.makedirs("logs")
+
+import logging
 from datetime import timedelta
 
 SECRET_KEY = "test"
@@ -10,6 +16,7 @@ CONFIG = {
     "JWT_SECRET_KEY": "secret",
     "JWT_ACCESS_TOKEN_EXPIRES": timedelta(minutes=TOKEN_EXPIRE_IN),
     "JWT_REFRESH_TOKEN_EXPIRES": timedelta(days=1),
+    "TESTING": False,
 }
 
 TEST_CONFIG = {
@@ -18,4 +25,10 @@ TEST_CONFIG = {
     "JWT_SECRET_KEY": "secret",
     "JWT_ACCESS_TOKEN_EXPIRES": timedelta(minutes=TOKEN_EXPIRE_IN),
     "JWT_REFRESH_TOKEN_EXPIRES": timedelta(days=1),
+    "TESTING": True,
 }
+
+LOGS_BASE_DIR = "logs"
+ERROR = logging.ERROR
+INFO = logging.INFO
+WARNING = logging.WARNING
