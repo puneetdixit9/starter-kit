@@ -1,5 +1,5 @@
-from integration_tests.router_base_test import BaseRouterTest
-from integration_tests.test_utils import add_address_data
+from tests.integration_tests.router_base_test import BaseRouterTest
+from tests.integration_tests.test_utils import add_address_data
 
 
 class MainRouterTest(BaseRouterTest):
@@ -10,7 +10,7 @@ class MainRouterTest(BaseRouterTest):
 
     def test_add_address_success(self):
         address = add_address_data()
-        response = self.app.post("/address", headers=self.get_headers(), json=address)
+        response = self.client.post("/address", headers=self.get_headers(), json=address)
         self.assertEqual(response.status_code, 201)
 
     def test_add_address_failure(self):
@@ -18,7 +18,7 @@ class MainRouterTest(BaseRouterTest):
 
         # Invalid address type
         address["type"] = "test"
-        response = self.app.post("/address", headers=self.get_headers(), json=address)
+        response = self.client.post("/address", headers=self.get_headers(), json=address)
         self.assertEqual(response.status_code, 400)
 
     def test_get_addresses(self):
@@ -26,11 +26,11 @@ class MainRouterTest(BaseRouterTest):
         address = add_address_data()
 
         # Adding addresses two times
-        self.app.post("/address", headers=headers, json=address)
+        self.client.post("/address", headers=headers, json=address)
         address["type"] = "other"
-        self.app.post("/address", headers=headers, json=address)
+        self.client.post("/address", headers=headers, json=address)
 
-        response = self.app.get("/addresses", headers=headers, json=address)
+        response = self.client.get("/addresses", headers=headers, json=address)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json), 2)
 
@@ -38,24 +38,24 @@ class MainRouterTest(BaseRouterTest):
         headers = self.get_headers()
 
         address = add_address_data()
-        response = self.app.post("/address", headers=headers, json=address)
+        response = self.client.post("/address", headers=headers, json=address)
         self.assertEqual(response.status_code, 201)
         address["address_id"] = response.json["address_id"]
         address["type"] = "other"
-        response = self.app.put("/address", headers=headers, json=address)
+        response = self.client.put("/address", headers=headers, json=address)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_address_success(self):
         headers = self.get_headers()
 
         address = add_address_data()
-        response = self.app.post("/address", headers=headers, json=address)
+        response = self.client.post("/address", headers=headers, json=address)
         self.assertEqual(response.status_code, 201)
 
-        response = self.app.delete(f"/address/{response.json['address_id']}", headers=headers)
+        response = self.client.delete(f"/address/{response.json['address_id']}", headers=headers)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_address_failure(self):
         address_id = 10  # Invalid address_id
-        response = self.app.delete(f"/address/{address_id}", headers=self.get_headers())
+        response = self.client.delete(f"/address/{address_id}", headers=self.get_headers())
         self.assertEqual(response.status_code, 404)

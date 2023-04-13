@@ -36,16 +36,12 @@ class AuthManager:
     def create_new_user(cls, user_data):
         error_data = {}
         user_by_email = User.query.filter_by(email=user_data["email"]).first()
-        user_by_username = User.query.filter_by(
-            username=user_data["username"]
-        ).first()
+        user_by_username = User.query.filter_by(username=user_data["username"]).first()
         if user_by_email or user_by_username:
             param = "username" if user_by_username else "email"
             error_data["error"] = f"user already exists with provided {param}"
         else:
-            user_data["password"] = generate_password_hash(
-                user_data["password"]
-            )
+            user_data["password"] = generate_password_hash(user_data["password"])
             user = User(**user_data)
             db.session.add(user)
             db.session.commit()
@@ -60,36 +56,27 @@ class AuthManager:
         db.session.commit()
 
     @classmethod
-    def update_user_password(cls, update_password_data={}):
+    def update_user_password(cls, update_password_data=None):
+        if update_password_data is None:
+            update_password_data = {}
         user = cls.get_current_user()
-        if check_password_hash(
-            user.password, update_password_data["old_password"]
-        ):
-            if check_password_hash(
-                user.password, update_password_data["new_password"]
-            ):
+        if check_password_hash(user.password, update_password_data["old_password"]):
+            if check_password_hash(user.password, update_password_data["new_password"]):
                 return (
                     jsonify(error="new password can not same as old password"),
                     403,
                 )
-            user.password = generate_password_hash(
-                update_password_data["new_password"]
-            )
+            user.password = generate_password_hash(update_password_data["new_password"])
             db.session.commit()
             return jsonify({"status": "success"}), 200
         return jsonify(error="Old password is invalid"), 403
 
     @classmethod
     def get_token(cls, login_data):
-        email_or_username = login_data.get("username") or login_data.get(
-            "email"
-        )
+        email_or_username = login_data.get("username") or login_data.get("email")
         user = (
             db.session.query(User)
-            .filter(
-                (User.email == email_or_username)
-                | (User.username == email_or_username)
-            )
+            .filter((User.email == email_or_username) | (User.username == email_or_username))
             .first()
         )
         if not user:
@@ -125,6 +112,4 @@ class AuthManager:
     def refresh_access_token(cls):
         identity = get_jwt_identity()
         access_token = create_access_token(identity=identity)
-        return jsonify(
-            access_token=access_token, expire_in=60 * settings.TOKEN_EXPIRE_IN
-        )
+        return jsonify(access_token=access_token, expire_in=60 * settings.TOKEN_EXPIRE_IN)
