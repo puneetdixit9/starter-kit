@@ -56,23 +56,20 @@ class AuthManager:
         db.session.commit()
 
     @classmethod
-    def update_user_password(cls, update_password_data=None):
-        if update_password_data is None:
-            update_password_data = {}
+    def update_user_password(cls, update_password_data={}):
         user = cls.get_current_user()
         if check_password_hash(user.password, update_password_data["old_password"]):
             if check_password_hash(user.password, update_password_data["new_password"]):
-                return (
-                    jsonify(error="new password can not same as old password"),
-                    403,
-                )
+                return {}, "new password can not same as old password"
             user.password = generate_password_hash(update_password_data["new_password"])
             db.session.commit()
-            return jsonify({"status": "success"}), 200
-        return jsonify(error="Old password is invalid"), 403
+            return {"status": "success"}, ""
+        return {}, "Old password is invalid"
 
     @classmethod
     def get_token(cls, login_data):
+        token = {}
+        error = ""
         email_or_username = login_data.get("username") or login_data.get("email")
         user = (
             db.session.query(User)
@@ -80,7 +77,7 @@ class AuthManager:
             .first()
         )
         if not user:
-            return {"error": f"user not found with {email_or_username}"}, 403
+            return token, f"user not found with {email_or_username}"
 
         if check_password_hash(user.password, login_data["password"]):
             access_token = create_access_token(identity={"user_id": user.id})
@@ -89,8 +86,8 @@ class AuthManager:
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "expire_in": settings.TOKEN_EXPIRE_IN * 60,
-            }, 200
-        return {"error": "wrong password"}, 403
+            }, error
+        return token, "wrong password"
 
     @classmethod
     def logout(cls):

@@ -9,7 +9,7 @@ def handle_exception(e, app):
         "payload": request.get_data().decode("utf-8"),
     }
     app.logger.exception(f"Request data: {request_data}, error:  {e}")
-    response = jsonify({"message": "Internal Server Error."})
+    response = jsonify({"msg": "Internal Server Error."})
     response.status_code = 500
     return response
 

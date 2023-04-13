@@ -53,6 +53,15 @@ class AuthRouterTest(BaseRouterTest):
         response = self.client.put("/change_password", headers=headers, json=update_password_data)
         self.assertEqual(response.status_code, 200)
 
+    def test_change_password_failure(self):
+        access_token = self.login()["access_token"]
+        headers = {"Authorization": f"Bearer {access_token}"}
+        update_password_data = get_update_password_data()
+        update_password_data["old_password"] = "wrong_password"
+        response = self.client.put("/change_password", headers=headers, json=update_password_data)
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.json["error"], "Old password is invalid")
+
     def test_change_password_without_access_token(self):
         self.login()
         update_password_data = get_update_password_data()
@@ -65,6 +74,22 @@ class AuthRouterTest(BaseRouterTest):
         headers = {"Authorization": f"Bearer {refresh_token}"}
         response = self.client.get("/refresh", headers=headers)
         self.assertEqual(response.status_code, 200)
+
+    def test_get_profile(self):
+        access_token = self.login()["access_token"]
+        headers = {"Authorization": f"Bearer {access_token}"}
+        response = self.client.get("/profile", headers=headers)
+        self.assertEqual(response.json["email"], "puneet@gmail.com")
+
+    def test_update_profile(self):
+        access_token = self.login()["access_token"]
+        headers = {"Authorization": f"Bearer {access_token}"}
+        updated_profile = {"department": "abc", "first_name": "dixit"}
+        response = self.client.put("/profile", headers=headers, json=updated_profile)
+        self.assertEqual(response.status_code, 200)
+        new_profile = self.client.get("/profile", headers=headers)
+        self.assertEqual(new_profile.json["department"], updated_profile["department"])
+        self.assertEqual(new_profile.json["first_name"], updated_profile["first_name"])
 
     def test_logout(self):
         token = self.login()

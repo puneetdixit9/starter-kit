@@ -25,8 +25,10 @@ def signup():
 @auth_router.route("/login", methods=["POST"])
 def login():
     data = get_data_from_request_or_raise_validation_error(LogInSchema, request.json)
-    token, status_code = AuthManager.get_token(data)
-    return jsonify(token), status_code
+    token, error_msg = AuthManager.get_token(data)
+    if error_msg:
+        return jsonify(error=error_msg), 403
+    return jsonify(token), 200
 
 
 @auth_router.route("/refresh", methods=["GET"])
@@ -49,7 +51,10 @@ def profile():
 @jwt_required()
 def change_password():
     data = get_data_from_request_or_raise_validation_error(UpdatePassword, request.json)
-    return AuthManager.update_user_password(data)
+    response, error_msg = AuthManager.update_user_password(data)
+    if error_msg:
+        return jsonify(error=error_msg), 401
+    return jsonify(response), 200
 
 
 @auth_router.route("/logout", methods=["DELETE"])

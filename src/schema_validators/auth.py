@@ -31,7 +31,6 @@ class UpdateProfile(Schema):
     department = fields.String()
     function = fields.String()
     role = fields.String()
-    mobile_number = fields.String()
 
 
 class UpdatePassword(Schema):

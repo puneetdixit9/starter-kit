@@ -10,17 +10,13 @@ from src.utils import get_data_from_request_or_raise_validation_error
 main_router = Blueprint("main", __name__)
 
 
-@main_router.route("/", methods=["GET"])
-def server_status():
-    return jsonify({"message": "server is up"}), 200
-
-
 @main_router.route("/address", methods=["POST"])
 @jwt_required()
 @allowed_roles([ROLE.USER.value])  # Allowed for User role type.
 def add_address():
     data = get_data_from_request_or_raise_validation_error(AddAddressSchema, request.json)
-    return MainManager.add_address(data)
+    response = MainManager.add_address(data)
+    return jsonify(response), 201
 
 
 @main_router.route("/addresses", methods=["GET"])
@@ -32,9 +28,10 @@ def get_addresses():
     if user.role == ROLE.ADMIN.value:
         if not user_id:
             data = MainManager.get_all_addresses()
+        else:
+            data = MainManager.get_addresses_by_user_id(user_id)
     else:
-        user_id = user.id
-        data = MainManager.get_addresses_by_user_id(user_id)
+        data = MainManager.get_addresses_by_user_id(user.id)
     return jsonify(data), 200
 
 
@@ -43,11 +40,13 @@ def get_addresses():
 @allowed_roles([ROLE.USER.value])
 def update_address():
     data = get_data_from_request_or_raise_validation_error(UpdateAddressSchema, request.json)
-    return MainManager.update_address(data, AuthManager.get_current_user())
+    response, status_code = MainManager.update_address(data, AuthManager.get_current_user())
+    return jsonify(response), status_code
 
 
 @main_router.route("/address/<address_id>", methods=["DELETE"])
 @jwt_required()
 @allowed_roles([ROLE.USER.value])
 def delete_address(address_id):
-    return MainManager.delete_address(address_id, AuthManager.get_current_user())
+    response, status_code = MainManager.delete_address(address_id, AuthManager.get_current_user())
+    return jsonify(response), status_code

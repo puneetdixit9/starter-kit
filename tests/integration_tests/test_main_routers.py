@@ -1,11 +1,19 @@
+from src.managers.auth import AuthManager
 from tests.integration_tests.router_base_test import BaseRouterTest
 from tests.integration_tests.test_utils import add_address_data
 
 
 class MainRouterTest(BaseRouterTest):
-    def get_headers(self):
-        access_token = self.login()["access_token"]
+    def add_fixtures(self):
+        admin = {"username": "testadmin", "email": "testadmin@gmail.com", "password": "test_password", "role": "admin"}
+        admin, _ = AuthManager.create_new_user(admin)
+        self.admin = admin
+        self.admin_headers = self.get_headers({"email": "testadmin@gmail.com", "password": "test_password"})
+        admin = {"username": "testuser", "email": "testuser@gmail.com", "password": "test_password", "role": "user"}
+        self.user, _ = AuthManager.create_new_user(admin)
 
+    def get_headers(self, login_data=None):
+        access_token = self.login(login_data)["access_token"]
         return {"Authorization": f"Bearer {access_token}"}
 
     def test_add_address_success(self):
@@ -33,6 +41,13 @@ class MainRouterTest(BaseRouterTest):
         response = self.client.get("/addresses", headers=headers, json=address)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json), 2)
+
+    def test_get_address_using_admin(self):
+        response = self.client.get("/addresses", headers=self.admin_headers)
+        self.assertEqual(0, len(response.json))
+
+        response = self.client.get(f"/addresses?id={self.user.id}", headers=self.admin_headers)
+        self.assertEqual(0, len(response.json))
 
     def test_update_address(self):
         headers = self.get_headers()

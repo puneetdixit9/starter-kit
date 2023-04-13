@@ -1,4 +1,3 @@
-from flask import jsonify
 from flask_jwt_extended import get_jwt_identity
 
 from src.database import db
@@ -16,7 +15,7 @@ class MainManager:
         db.session.add(address)
         db.session.commit()
 
-        return jsonify({"address_id": address.id, "status": "success"}), 201
+        return {"address_id": address.id, "status": "success"}
 
     @classmethod
     def get_all_addresses(cls):
@@ -36,25 +35,25 @@ class MainManager:
     def update_address(cls, updated_address, current_user):
         address = cls.get_address_by_address_id(updated_address["address_id"])
         if not address:
-            return jsonify(error="address_id not found"), 403
+            return {"error": "address_id not found"}, 404
 
         if address.user_id != current_user.id:
-            return jsonify(error="Unauthorized User!!"), 401
+            return {"error": "Unauthorized user"}, 401
 
         update_class_object(address, updated_address)
 
         db.session.commit()
-        return jsonify(message="success"), 200
+        return {"msg": "success"}, 200
 
     @classmethod
     def delete_address(cls, address_id, current_user):
         address = cls.get_address_by_address_id(address_id)
         if not address:
-            return jsonify(error="address_id not found"), 404
+            return {"error": "address_id not found"}, 404
 
         if address.user_id != current_user.id:
-            return jsonify(error="Unauthorized User!!"), 401
+            return {"error": "Unauthorized user"}, 401
 
         Address.query.filter_by(id=address_id).delete()
         db.session.commit()
-        return jsonify(message="success"), 200
+        return {"msg": "success"}, 200
