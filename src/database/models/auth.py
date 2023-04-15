@@ -20,8 +20,8 @@ class User(db.Model):
     function = db.Column(db.String(100), nullable=True)
     role = db.Column(db.String(100), nullable=True)
     mobile_number = db.Column(db.String(100), nullable=True)
-    created_on = db.Column(db.DateTime, server_default=db.func.now())
-    updated_on = db.Column(db.DateTime, default=None, onupdate=db.func.now())
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, default=None, onupdate=db.func.now())
 
     def as_dict(self) -> dict:
         """

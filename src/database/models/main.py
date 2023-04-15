@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from src.database import db
 
 
@@ -16,8 +14,8 @@ class Address(db.Model):
     landmark = db.Column(db.String)
     country = db.Column(db.String, nullable=False)
     pin_code = db.Column(db.String, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now())
-    updated_at = db.Column(db.DateTime, default=datetime.now())
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, default=None, onupdate=db.func.now())
     user_id = db.Column(db.ForeignKey("user.id"))
 
     user = db.relationship("User", backref=db.backref("addresses", lazy=True))
