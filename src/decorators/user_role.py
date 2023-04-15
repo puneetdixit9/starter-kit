@@ -6,8 +6,13 @@ from flask_jwt_extended import get_jwt_identity
 from src.database.models.auth import User
 
 
-# decorator for verifying the JWT
-def allowed_roles(roles):
+def allowed_roles(roles: list):
+    """
+    This decorator function is used for verifying allowed roles using jwt token and user role.
+    :param roles:
+    :return:
+    """
+
     def role_required(f):
         @wraps(f)
         def decorated(*args, **kwargs):

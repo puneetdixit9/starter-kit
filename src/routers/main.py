@@ -10,43 +10,35 @@ from src.utils import get_data_from_request_or_raise_validation_error
 main_router = Blueprint("main", __name__)
 
 
-@main_router.route("/address", methods=["POST"])
+@main_router.route("/addresses/<address_id>", methods=["GET", "PUT", "DELETE"])
+@main_router.route("/addresses", methods=["POST", "GET"])
 @jwt_required()
-@allowed_roles([ROLE.USER.value])  # Allowed for User role type.
-def add_address():
-    data = get_data_from_request_or_raise_validation_error(AddAddressSchema, request.json)
-    response = MainManager.add_address(data)
-    return jsonify(response), 201
-
-
-@main_router.route("/addresses", methods=["GET"])
-@jwt_required()
-@allowed_roles([ROLE.ADMIN.value, ROLE.USER.value])  # Allowed for Admin and User role type.
-def get_addresses():
+@allowed_roles([ROLE.ADMIN.value, ROLE.USER.value])
+def addresses(address_id: int = None):
+    """
+    This view function is used to handle all CURD operation of address.
+    :param address_id:
+    :return:
+    """
     user = AuthManager.get_current_user()
-    user_id = request.args.get("id")
-    if user.role == ROLE.ADMIN.value:
-        if not user_id:
-            data = MainManager.get_all_addresses()
+    if request.method == "GET":
+        if not address_id:
+            response = MainManager.get_addresses(user)
         else:
-            data = MainManager.get_addresses_by_user_id(user_id)
+            response = MainManager.get_address_by_address_id(address_id, user)
+        return jsonify(response)
+
+    elif request.method == "POST":
+        data = get_data_from_request_or_raise_validation_error(AddAddressSchema, request.json)
+        data.update({"user_id": user.id})
+        response = MainManager.add_address(data)
+        return jsonify(id=response), 201
+
+    elif request.method == "PUT":
+        data = get_data_from_request_or_raise_validation_error(UpdateAddressSchema, request.json)
+        response = MainManager.update_address(address_id, data, user)
+        return jsonify(response)
+
     else:
-        data = MainManager.get_addresses_by_user_id(user.id)
-    return jsonify(data), 200
-
-
-@main_router.route("/address", methods=["PUT"])
-@jwt_required()
-@allowed_roles([ROLE.USER.value])
-def update_address():
-    data = get_data_from_request_or_raise_validation_error(UpdateAddressSchema, request.json)
-    response, status_code = MainManager.update_address(data, AuthManager.get_current_user())
-    return jsonify(response), status_code
-
-
-@main_router.route("/address/<address_id>", methods=["DELETE"])
-@jwt_required()
-@allowed_roles([ROLE.USER.value])
-def delete_address(address_id):
-    response, status_code = MainManager.delete_address(address_id, AuthManager.get_current_user())
-    return jsonify(response), status_code
+        response = MainManager.delete_address(address_id, user)
+        return jsonify(response)

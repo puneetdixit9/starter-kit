@@ -4,6 +4,10 @@ from src.database import db
 
 
 class Address(db.Model):
+    """
+    Model for address.
+    """
+
     __tablename__ = "address"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -19,6 +23,10 @@ class Address(db.Model):
     user = db.relationship("User", backref=db.backref("addresses", lazy=True))
 
     def as_dict(self):
+        """
+        This function is used to convert the Address obj to a dict.
+        :return:
+        """
         dict_data = {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name != "user_id"}
         dict_data["username"] = self.user.username if self.user else None
         return dict_data

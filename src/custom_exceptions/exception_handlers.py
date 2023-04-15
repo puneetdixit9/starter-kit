@@ -1,6 +1,19 @@
 from flask import jsonify, request
 
 
+def create_error_response(error):
+    response = jsonify(
+        {
+            "error": str(error),
+        }
+    )
+    response.status_code = error.status_code
+    return response
+
+
+#  below are the handlers for custom exception classes.
+
+
 def handle_exception(e, app):
     request_data = {
         "method": request.method,
@@ -15,10 +28,12 @@ def handle_exception(e, app):
 
 
 def handle_validation_error(error):
-    response = jsonify(
-        {
-            "error": str(error),
-        }
-    )
-    response.status_code = error.status_code
-    return response
+    return create_error_response(error)
+
+
+def handle_unauthorized_user_error(error):
+    return create_error_response(error)
+
+
+def handle_record_not_found_error(error):
+    return create_error_response(error)

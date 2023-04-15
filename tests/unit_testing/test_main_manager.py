@@ -2,6 +2,7 @@ from datetime import datetime
 
 from flask_jwt_extended import verify_jwt_in_request
 
+from src.custom_exceptions.exceptions import RecordNotFoundError, UnauthorizedUserError
 from src.database import db
 from src.database.models.auth import User
 from src.database.models.main import Address
@@ -50,9 +51,8 @@ class TestAuthManager(BaseUnitTest):
                 "updated_at": datetime.utcnow(),
                 "user_id": user.id,
             }
-            response_data = MainManager.add_address(address_data)
-            self.assertIn("address_id", response_data)
-            address_id = response_data["address_id"]
+            address_id = MainManager.add_address(address_data)
+            self.assertEqual(2, address_id)
             address = Address.query.filter_by(id=address_id).first()
             self.assertIsNotNone(address)
             self.assertEqual(address.user_id, user.id)
@@ -65,47 +65,49 @@ class TestAuthManager(BaseUnitTest):
             self.assertEqual(address.updated_at, address_data["updated_at"])
 
     def test_get_all_address(self):
-        all_addresses = MainManager.get_all_addresses()
-        self.assertEqual(1, len(all_addresses))
-        self.assertEqual("home", all_addresses[0]["type"])
-
-    def test_get_address_by_user_id(self):
-        all_addresses = MainManager.get_addresses_by_user_id(self.user.id)
+        all_addresses = MainManager.get_addresses(self.user)
         self.assertEqual(1, len(all_addresses))
         self.assertEqual("home", all_addresses[0]["type"])
 
     def test_get_address_by_address_id(self):
-        address = MainManager.get_address_by_address_id(self.address.id)
-        self.assertEqual("India", address.country)
+        address = MainManager.get_address_by_address_id(self.address.id, self.user)
+        self.assertEqual("India", address["country"])
 
-    def test_update_address(self):
-        invalid_user, headers = self.get_user_and_headers()
-        updated_address = {"type": "work", "address_id": 999}  # invalid id
+    def test_update_address_success(self):
+        with self.app.test_request_context():
+            result = MainManager.update_address(self.address.id, {"type": "other"}, self.user)
+            self.assertEqual(result, {"msg": "success"})
+            self.assertEqual(Address.query.filter_by(id=self.address.id).first().type, "other")
 
-        response = MainManager.update_address(updated_address, invalid_user)
-        self.assertEqual(response[0], {"error": "address_id not found"})
-        self.assertEqual(response[1], 404)
+    def test_update_address_record_not_found_error(self):
+        with self.app.test_request_context():
+            with self.assertRaises(RecordNotFoundError):
+                invalid_address_id = -1
+                MainManager.update_address(invalid_address_id, {"type": "other"}, self.user)
 
-        updated_address["address_id"] = self.address.id
-        response = MainManager.update_address(updated_address, invalid_user)
-        self.assertEqual(response[0], {"error": "Unauthorized user"})
-        self.assertEqual(response[1], 401)
+    def test_update_address_unauthorized_user_error(self):
+        with self.app.test_request_context():
+            unauthorized_user = User(username="unauthorized_user", email="test2@test.com", password="test")
+            db.session.add(unauthorized_user)
+            db.session.commit()
+            with self.assertRaises(UnauthorizedUserError):
+                MainManager.update_address(self.address.id, {"type": "other"}, unauthorized_user)
 
-        response = MainManager.update_address(updated_address, self.user)
-        self.assertEqual(response[0], {"msg": "success"})
-        self.assertEqual(response[1], 200)
+    def test_delete_address_success(self):
+        with self.app.test_request_context():
+            result = MainManager.delete_address(self.address.id, self.user)
+            self.assertEqual(result, {"msg": "success"})
+            self.assertIsNone(Address.query.filter_by(id=self.address.id).first())
 
-    def test_delete_address(self):
-        invalid_user, headers = self.get_user_and_headers()
+    def test_delete_address_record_not_found_error(self):
+        with self.app.test_request_context():
+            with self.assertRaises(RecordNotFoundError):
+                MainManager.delete_address(-1, self.user)
 
-        response = MainManager.delete_address(999, invalid_user)  # invalid address_id
-        self.assertEqual(response[0], {"error": "address_id not found"})
-        self.assertEqual(response[1], 404)
-
-        response = MainManager.delete_address(self.address.id, invalid_user)
-        self.assertEqual(response[0], {"error": "Unauthorized user"})
-        self.assertEqual(response[1], 401)
-
-        response = MainManager.delete_address(self.address.id, self.user)
-        self.assertEqual(response[0], {"msg": "success"})
-        self.assertEqual(response[1], 200)
+    def test_delete_address_unauthorized_user_error(self):
+        with self.app.test_request_context():
+            unauthorized_user = User(username="unauthorized_user", email="test2@test.com", password="test")
+            db.session.add(unauthorized_user)
+            db.session.commit()
+            with self.assertRaises(UnauthorizedUserError):
+                MainManager.delete_address(self.address.id, unauthorized_user)

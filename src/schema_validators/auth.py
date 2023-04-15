@@ -3,6 +3,10 @@ from marshmallow.validate import ContainsOnly, Length, OneOf
 
 
 class SignUpSchema(Schema):
+    """
+    In this schema we defined the required json for signup any user.
+    """
+
     first_name = fields.String()
     last_name = fields.String()
 
@@ -15,6 +19,10 @@ class SignUpSchema(Schema):
 
 
 class LogInSchema(Schema):
+    """
+    In this schema we defined the required json to log in any user.
+    """
+
     username = fields.String()
     email = fields.Email()
     password = fields.String(required=True, validate=Length(min=8))
@@ -26,6 +34,10 @@ class LogInSchema(Schema):
 
 
 class UpdateProfile(Schema):
+    """
+    Required schema to update user profile.
+    """
+
     first_name = fields.String()
     last_name = fields.String()
     department = fields.String()
@@ -34,5 +46,9 @@ class UpdateProfile(Schema):
 
 
 class UpdatePassword(Schema):
+    """
+    Required schema to update the password
+    """
+
     old_password = fields.String(required=True)
     new_password = fields.String(required=True, validate=Length(min=8))
