@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_restful import Api
 
 import settings
 from src.custom_exceptions import CUSTOM_EXCEPTIONS
@@ -8,11 +9,15 @@ from src.database import db
 from src.logging_module.logger import get_handler
 from src.managers.jwt import jwt
 from src.routers import APP_BLUEPRINTS
+from src.routers.main import AddressApi, AddressApi2
 from src.utils import log_user_access
 
 
 def get_app(config):
     app = Flask(__name__)
+    api = Api(app)
+    api.add_resource(AddressApi, "/addresses")
+    api.add_resource(AddressApi2, "/addresses/<int:address_id>")
 
     app.config.update(config)
     CORS(app)
