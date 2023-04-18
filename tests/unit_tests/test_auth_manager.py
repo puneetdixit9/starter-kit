@@ -4,7 +4,7 @@ from flask_jwt_extended import verify_jwt_in_request
 
 from src.database.models.auth import User
 from src.managers.auth import AuthManager
-from tests.unit_testing.base_unit_test import BaseUnitTest
+from tests.unit_tests.base_unit_test import BaseUnitTest
 
 
 class TestAuthManager(BaseUnitTest):

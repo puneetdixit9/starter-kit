@@ -7,7 +7,7 @@ from src.database import db
 from src.database.models.auth import User
 from src.database.models.main import Address
 from src.managers.main import MainManager
-from tests.unit_testing.base_unit_test import BaseUnitTest
+from tests.unit_tests.base_unit_test import BaseUnitTest
 
 
 class TestAuthManager(BaseUnitTest):

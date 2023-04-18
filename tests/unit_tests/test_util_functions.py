@@ -1,7 +1,7 @@
 from flask import Response
 
 from src.utils import log_user_access
-from tests.unit_testing.base_unit_test import BaseUnitTest
+from tests.unit_tests.base_unit_test import BaseUnitTest
 
 
 class TestUnitUtils(BaseUnitTest):

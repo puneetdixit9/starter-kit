@@ -29,7 +29,7 @@ class BaseUnitTest(unittest.TestCase):
         self.app_context.pop()
         with self.app.app_context():
             _db.engine.dispose()
-        path = os.getcwd().replace("\\tests\\unit_testing", "")
+        path = os.getcwd().replace("\\tests\\unit_tests", "")
         os.remove(path + "\\instance\\test_db.sqlite")
 
     def signup(self):

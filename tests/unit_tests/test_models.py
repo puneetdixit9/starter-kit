@@ -2,7 +2,7 @@ from src.database import db
 from src.database.models.auth import User
 from src.database.models.main import Address
 from src.utils import update_class_object
-from tests.unit_testing.base_unit_test import BaseUnitTest
+from tests.unit_tests.base_unit_test import BaseUnitTest
 
 
 class ModelsTests(BaseUnitTest):
@@ -107,8 +107,8 @@ class ModelsTests(BaseUnitTest):
         self.assertEqual(address.landmark, self.address.landmark)
         update_class_object(address, {"landmark": "test", "country": "test"})
         db.session.commit()
-        self.assertEquals(address.landmark, "test")
-        self.assertEquals(address.country, "test")
+        self.assertEqual(address.landmark, "test")
+        self.assertEqual(address.country, "test")
 
     def test_delete_address(self):
         self.assertIsNotNone(self.address)
