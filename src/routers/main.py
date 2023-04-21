@@ -1,6 +1,8 @@
 from flask import jsonify, make_response, request
 from flask_jwt_extended import jwt_required
-from flask_restful import Resource
+
+# from flask_restful import Resource
+from flask_restx import Namespace, Resource
 
 from src.managers.auth import AuthManager
 from src.managers.main import MainManager
@@ -69,3 +71,8 @@ class AddressApi2(Resource):
         user = AuthManager.get_current_user()
         response = MainManager.delete_address(address_id, user)
         return jsonify(response)
+
+
+address_namespace = Namespace("addresses", description="Address Operations")
+address_namespace.add_resource(AddressApi, "")
+address_namespace.add_resource(AddressApi2, "/<int:address_id>")

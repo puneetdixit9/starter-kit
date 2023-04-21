@@ -5,7 +5,7 @@ from unittest.mock import patch
 from flask_jwt_extended import create_access_token
 
 import settings
-from server import get_app
+from app import get_app
 from src.database import db as _db
 from src.managers.auth import AuthManager
 from tests.integration_tests.test_utils import get_login_data, get_signup_data

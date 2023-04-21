@@ -2,7 +2,7 @@ import os
 import unittest
 
 import settings
-from server import get_app
+from app import get_app
 from src.database import db as _db
 from tests.integration_tests.test_utils import get_login_data, get_signup_data
 
