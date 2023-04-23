@@ -17,6 +17,8 @@ CONFIG = {
     "JWT_SECRET_KEY": os.environ.get("JWT_SECRET_KEY"),
     "JWT_ACCESS_TOKEN_EXPIRES": timedelta(minutes=int(os.environ.get("JWT_ACCESS_TOKEN_EXPIRES_TIME"))),
     "JWT_REFRESH_TOKEN_EXPIRES": timedelta(minutes=int(os.environ.get("JWT_REFRESH_TOKEN_EXPIRES_TIME"))),
+    "SQLALCHEMY_POOL_SIZE": 10,
+    "SQLALCHEMY_MAX_OVERFLOW": 5,
 }
 
 TEST_CONFIG = CONFIG.copy()
