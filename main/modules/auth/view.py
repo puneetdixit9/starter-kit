@@ -34,15 +34,14 @@ class Login(Resource):
 
 
 class Refresh(Resource):
-    method_decorators = [jwt_required()]
+    method_decorators = [jwt_required(refresh=True)]
 
     def get(self):
         """
         This view function is used to update the access token using a valid refresh token.
         :return:
         """
-        token = AuthUserController.refresh_access_token()
-        return jsonify(token)
+        return jsonify(AuthUserController.refresh_access_token())
 
 
 class ChangePassword(Resource):
@@ -61,15 +60,14 @@ class ChangePassword(Resource):
 
 
 class Logout(Resource):
-    method_decorators = [jwt_required()]
+    method_decorators = [jwt_required(verify_type=False)]
 
     def delete(self):
         """
         This view function is used to log out the user.
         :return:
         """
-        AuthUserController.logout()
-        return jsonify(msg="success")
+        return AuthUserController.logout()
 
 
 auth_namespace = Namespace("auth", description="Auth Operations")

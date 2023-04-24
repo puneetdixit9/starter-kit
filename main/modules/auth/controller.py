@@ -62,12 +62,12 @@ class AuthUserController:
         if check_password_hash(auth_user.password, update_password_data["old_password"]):
             if check_password_hash(auth_user.password, update_password_data["new_password"]):
                 return {}, "new password can not same as old password"
-            auth_user.update({AuthUser.password: generate_password_hash(update_password_data["new_password"])})
+            auth_user.update({"password": generate_password_hash(update_password_data["new_password"])})
             return {"status": "success"}, ""
         return {}, "Old password is invalid"
 
     @classmethod
-    def get_token(cls, login_data: dict) -> (dict, str):
+    def get_token(cls, login_data: dict) -> [dict, str]:
         """
         This function is used to get the token using email or username and password. It returns
         access_token and refresh_token.
@@ -93,8 +93,8 @@ class AuthUserController:
         that token in blocklist so that no one can use that token.
         :return:
         """
-        token = JWTController.block_jwt_token()
-        return jsonify(msg=f"{token.ttype.capitalize()} token successfully revoked")
+        blocked_token = JWTController.block_jwt_token()
+        return jsonify(msg=f"{blocked_token.type.capitalize()} token successfully revoked")
 
     @classmethod
     def refresh_access_token(cls) -> dict:

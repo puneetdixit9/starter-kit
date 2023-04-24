@@ -30,7 +30,7 @@ class JWTController:
         ttype = token["type"]
         identity = get_jwt_identity()
         user_id = identity["user_id"]
-        TokenBlocklist.create({"jti": jti, "ttype": ttype, "user_id": user_id})
+        return TokenBlocklist.create({"jti": jti, "type": ttype, "user_id": user_id})
 
     @classmethod
     def token_revoked_check(cls, jwt_header, jwt_payload: dict) -> TokenBlocklist or None:
