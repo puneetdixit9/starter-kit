@@ -8,7 +8,7 @@ from main.custom_exceptions.exception_handlers import handle_exception
 from main.db import db
 from main.logging_module.logger import get_handler
 from main.modules import api, jwt
-from src.utils import log_user_access
+from main.utils import log_user_access
 
 
 def get_app(config):

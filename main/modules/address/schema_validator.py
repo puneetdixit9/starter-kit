@@ -17,7 +17,6 @@ class AddAddressSchema(Schema):
     house_no_and_street = fields.String(required=True)
     landmark = fields.String(required=False)
     country = fields.String(required=True)
-
     pin_code = fields.Integer(required=True)
 
 
