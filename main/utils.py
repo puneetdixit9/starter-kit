@@ -2,13 +2,13 @@ import operator
 from datetime import datetime
 
 from flask import request
+from flask_sqlalchemy import SQLAlchemy
 from marshmallow import ValidationError
 from sqlalchemy import between, or_
 
 import settings
-from main.db import db
-from src.custom_exceptions import CustomValidationError
-from src.logging_module.logger import get_logger
+from main.custom_exceptions import CustomValidationError
+from main.logging_module.logger import get_logger
 
 access_logger = get_logger("access", settings.INFO)
 
@@ -65,7 +65,7 @@ def validate_like(v: str):
         raise ValidationError("Like values must contain '%', e.g ['%example%', '%example', 'example%']")
 
 
-def validate_not_dict_list_tuple(value):
+def validate_not_dict_list_tuple(value: type):
     """
     This function is used in schema validators to validate the type of value.
     :param value:
@@ -85,16 +85,14 @@ def validate_int_float_date(value: int | float | str):
         try:
             datetime.strptime(value, "%Y-%m-%d")
         except ValueError:
-            raise ValidationError(f"Value {value} must be an int, float, or str('yyyy-mm-dd')")
-
-    if not isinstance(value, (int, float, str)):
-        raise ValidationError(f"Value {value} must be an int, float, or str('yyyy-mm-dd')")
+            if not isinstance(value, (int, float)):
+                raise ValidationError(f"Value {value} must be an int, float, or str('yyyy-mm-dd')")
 
 
-def add_filters_using_mapping(model, conditions: dict, filters: list, operator_key: str):
+def add_filters_using_mapping(model: type, conditions: dict, filters: list, operator_key: str):
     """
     This function is used to update the filters using input and operators mapping.
-    :param model:
+    :param model: The SQLAlchemy model to add filters to.
     :param conditions:
     :param filters:
     :param operator_key:
@@ -107,11 +105,10 @@ def add_filters_using_mapping(model, conditions: dict, filters: list, operator_k
         "less_than_or_equal": operator.le,
         "greater_than": operator.gt,
         "greater_than_or_equal": operator.ge,
-        "logical_or": operator.or_,
-        "contains": operator.contains,
-        "has_key": lambda x, y: y in x,
-        "any": any,
-        "has_all": lambda x, y: all(elem in x for elem in y),
+        # "contains": operator.contains,
+        # "has_key": lambda x, y: y in x,
+        # "any": any,
+        # "has_all": lambda x, y: all(elem in x for elem in y),
     }
 
     logical_or_filters = []
@@ -132,10 +129,28 @@ def add_filters_using_mapping(model, conditions: dict, filters: list, operator_k
     filters.append(or_(*logical_or_filters))
 
 
-def get_query_including_filters(model, filter_dict):
+def add_filters_for_null_and_not_null(model: type, operator_key: str, conditions: dict, filters: list):
+    """
+    This function is used to add filters for null and not null values.
+    :param model: The SQLAlchemy model to add filters to.
+    :param operator_key:
+    :param conditions:
+    :param filters:
+    :return:
+    """
+    for column in conditions:
+        if hasattr(model, column):
+            if operator_key == "is_null":
+                filters.append(getattr(model, column) == None)  # noqa
+            else:
+                filters.append(getattr(model, column) != None)  # noqa
+
+
+def get_query_including_filters(db: SQLAlchemy, model: type, filter_dict: dict):
     """
     This function is used to get the query with all filters
-    :param model:
+    :param db:
+    :param model: The SQLAlchemy model to add filters to.
     :param filter_dict:
     :return:
     """
@@ -144,12 +159,7 @@ def get_query_including_filters(model, filter_dict):
     filters = []
     for operator_key, conditions in filter_dict.items():
         if operator_key == "is_null" or operator_key == "is_not_null":
-            for column in conditions:
-                if hasattr(model, column):
-                    if operator_key == "is_null":
-                        filters.append(None == getattr(model, column))  # noqa
-                    else:
-                        filters.append(None != getattr(model, column))  # noqa
+            add_filters_for_null_and_not_null(model, operator_key, conditions, filters)
         else:
             add_filters_using_mapping(model, conditions, filters, operator_key)
     return query.filter(*filters)

@@ -3,6 +3,7 @@
 **xml
 */venv/*
 */logs/*
+*/instance/*
 *.pyc
 *.log
 *.coverage
