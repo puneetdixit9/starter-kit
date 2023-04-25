@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_migrate import Migrate
 
 import settings
 from main.custom_exceptions import CUSTOM_EXCEPTIONS
@@ -18,6 +19,7 @@ def get_app(config):
     api.init_app(app)
     db.init_app(app)
     jwt.init_app(app)
+    Migrate(app, db)
 
     # register all custom custom_exceptions
     for exc in CUSTOM_EXCEPTIONS:

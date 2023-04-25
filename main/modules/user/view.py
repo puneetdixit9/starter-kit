@@ -62,7 +62,7 @@ class Profiles2(Resource):
         return jsonify(msg="success")
 
 
-profile_namespace = Namespace("users", description="User Operations")
-profile_namespace.add_resource(Profile, "/profile")
-profile_namespace.add_resource(Profiles, "/profiles")
-profile_namespace.add_resource(Profiles2, "/profiles/<int:user_id>")
+user_namespace = Namespace("users", description="User Operations")
+user_namespace.add_resource(Profile, "/profile")
+user_namespace.add_resource(Profiles, "/profiles")
+user_namespace.add_resource(Profiles2, "/profiles/<int:user_id>")

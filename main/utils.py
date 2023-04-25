@@ -1,7 +1,12 @@
+import operator
+from datetime import datetime
+
 from flask import request
 from marshmallow import ValidationError
+from sqlalchemy import between, or_
 
 import settings
+from main.db import db
 from src.custom_exceptions import CustomValidationError
 from src.logging_module.logger import get_logger
 
@@ -42,3 +47,109 @@ def log_user_access(response):
         f"Status code: {response.status_code}"
     )
     return response
+
+
+def validate_like(v: str):
+    """
+    This function is used in schema validators to validate like field.
+    :param v:
+    :return:
+    """
+    if v.startswith("%") and v.endswith("%"):
+        return True
+    elif v.startswith("%"):
+        return True
+    elif v.endswith("%"):
+        return True
+    else:
+        raise ValidationError("Like values must contain '%', e.g ['%example%', '%example', 'example%']")
+
+
+def validate_not_dict_list_tuple(value):
+    """
+    This function is used in schema validators to validate the type of value.
+    :param value:
+    :return:
+    """
+    if isinstance(value, (dict, list, tuple)):
+        raise ValidationError(f"Value {value} must not be a dict, list, or tuple")
+
+
+def validate_int_float_date(value: int | float | str):
+    """
+    This function is used in schema validators to validate the type of value.
+    :param value:
+    :return:
+    """
+    if isinstance(value, str):
+        try:
+            datetime.strptime(value, "%Y-%m-%d")
+        except ValueError:
+            raise ValidationError(f"Value {value} must be an int, float, or str('yyyy-mm-dd')")
+
+    if not isinstance(value, (int, float, str)):
+        raise ValidationError(f"Value {value} must be an int, float, or str('yyyy-mm-dd')")
+
+
+def add_filters_using_mapping(model, conditions: dict, filters: list, operator_key: str):
+    """
+    This function is used to update the filters using input and operators mapping.
+    :param model:
+    :param conditions:
+    :param filters:
+    :param operator_key:
+    :return:
+    """
+    operator_mapping = {
+        "equal": operator.eq,
+        "not_equal": operator.ne,
+        "less_than": operator.lt,
+        "less_than_or_equal": operator.le,
+        "greater_than": operator.gt,
+        "greater_than_or_equal": operator.ge,
+        "logical_or": operator.or_,
+        "contains": operator.contains,
+        "has_key": lambda x, y: y in x,
+        "any": any,
+        "has_all": lambda x, y: all(elem in x for elem in y),
+    }
+
+    logical_or_filters = []
+    for column, value in conditions.items():
+        if hasattr(model, column):
+            if operator_key == "between":
+                filters.append(between(getattr(model, column), value[0], value[1]))
+            elif operator_key == "in_list":
+                filters.append(getattr(model, column).in_(value))
+            elif operator_key == "not_in_list":
+                filters.append(getattr(model, column).notin_(value))
+            elif operator_key == "logical_or":
+                logical_or_filters.append(getattr(model, column) == value)
+            elif operator_key == "like":
+                filters.append(getattr(model, column).like(value))
+            else:
+                filters.append(operator_mapping[operator_key](getattr(model, column), value))
+    filters.append(or_(*logical_or_filters))
+
+
+def get_query_including_filters(model, filter_dict):
+    """
+    This function is used to get the query with all filters
+    :param model:
+    :param filter_dict:
+    :return:
+    """
+    query = db.session.query(model)
+
+    filters = []
+    for operator_key, conditions in filter_dict.items():
+        if operator_key == "is_null" or operator_key == "is_not_null":
+            for column in conditions:
+                if hasattr(model, column):
+                    if operator_key == "is_null":
+                        filters.append(None == getattr(model, column))  # noqa
+                    else:
+                        filters.append(None != getattr(model, column))  # noqa
+        else:
+            add_filters_using_mapping(model, conditions, filters, operator_key)
+    return query.filter(*filters)

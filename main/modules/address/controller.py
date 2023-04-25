@@ -2,7 +2,7 @@ from main.custom_exceptions import RecordNotFoundError, UnauthorizedUserError
 from main.modules.address.model import Address
 from main.modules.auth.controller import AuthUserController
 from main.modules.auth.model import AuthUser
-from src.managers.auth import ROLE
+from main.utils import get_query_including_filters
 
 
 class AddressController:
@@ -28,7 +28,7 @@ class AddressController:
         :param auth_user:
         :return list[Address]:
         """
-        if auth_user.role == ROLE.ADMIN.value:
+        if auth_user.role == AuthUserController.ROLES.ADMIN.value:
             addresses = Address.query.all()
         else:
             addresses = Address.query.filter_by(user_id=auth_user.id)
@@ -59,6 +59,11 @@ class AddressController:
         cls.required_checks(auth_user, address)
         address.update(updated_address)
         return {"msg": "success"}
+
+    @classmethod
+    def execute_filters(cls, filters):
+        query = get_query_including_filters(Address, filters)
+        return [address.serialize() for address in query.all()]
 
     @classmethod
     def delete_address(cls, address_id, auth_user):

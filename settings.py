@@ -19,6 +19,7 @@ CONFIG = {
     "JWT_REFRESH_TOKEN_EXPIRES": timedelta(minutes=int(os.environ.get("JWT_REFRESH_TOKEN_EXPIRES_TIME"))),
     "SQLALCHEMY_POOL_SIZE": 10,
     "SQLALCHEMY_MAX_OVERFLOW": 5,
+    "SQLALCHEMY_ECHO": True,
 }
 
 TEST_CONFIG = CONFIG.copy()
