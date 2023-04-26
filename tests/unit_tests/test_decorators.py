@@ -1,6 +1,6 @@
 from flask_jwt_extended import create_access_token, verify_jwt_in_request
 
-from src.decorators.user_role import allowed_roles
+from main.decorators.user_role import allowed_roles
 from tests.unit_tests.base_unit_test import BaseUnitTest
 
 
