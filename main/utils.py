@@ -3,7 +3,8 @@ from datetime import datetime
 
 from flask import request
 from flask_sqlalchemy import SQLAlchemy
-from marshmallow import ValidationError
+from marshmallow import Schema, ValidationError, fields
+from marshmallow.validate import Length
 from sqlalchemy import between, or_
 
 import settings
@@ -13,43 +14,7 @@ from main.logging_module.logger import get_logger
 access_logger = get_logger("access", settings.INFO)
 
 
-def get_data_from_request_or_raise_validation_error(validator_schema, data: dict) -> dict:
-    """
-    This function is used to get the and validate it according to its validator schema and
-    return request data in dict form. Also, it is used to raise ValidationError (A Custom
-    Exception) and return a complete error msg.
-    :param validator_schema:
-    :param data:
-    :return:
-    """
-    try:
-        validator = validator_schema()
-        data = validator.load(data)
-    except ValidationError as err:
-        raise CustomValidationError(err)
-
-    return data
-
-
-def log_user_access(response):
-    """
-    This function is used by the flask app server to log each and every request in access_logger
-    :param response:
-    :return:
-    """
-    access_logger.info(
-        f"User IP Address: {request.remote_addr} \n"
-        f"Method: {request.method}\n"
-        f"Path: {request.path}\n"
-        f"Headers: {request.headers}"
-        f"Request Payload: {request.get_data(as_text=True)}\n"
-        f"Response data: {response.get_data(as_text=True)}\n"
-        f"Status code: {response.status_code}"
-    )
-    return response
-
-
-def validate_like(v: str):
+def validate_substr(v: str):
     """
     This function is used in schema validators to validate like field.
     :param v:
@@ -89,6 +54,66 @@ def validate_int_float_date(value: int | float | str):
                 raise ValidationError(f"Value {value} must be an int, float, or str('yyyy-mm-dd')")
 
 
+class FiltersDataSchema(Schema):
+    """
+    Schema to validate filters data
+    """
+
+    eq = fields.Dict(fields.String(), fields.Field(validate=validate_not_dict_list_tuple), required=False)
+    ne = fields.Dict(fields.String(), fields.Field(validate=validate_not_dict_list_tuple), required=False)
+    lt = fields.Dict(fields.String(), fields.Field(validate=validate_int_float_date), required=False)
+    gt = fields.Dict(fields.String(), fields.Field(validate=validate_int_float_date), required=False)
+    lte = fields.Dict(fields.String(), fields.Field(validate=validate_int_float_date), required=False)
+    gte = fields.Dict(fields.String(), fields.Field(validate=validate_int_float_date), required=False)
+    between = fields.Dict(
+        fields.String(),
+        fields.List(fields.Field(validate=validate_int_float_date), validate=Length(equal=2)),
+        required=False,
+    )
+    in_ = fields.Dict(fields.String(), fields.List(fields.Field(validate=validate_not_dict_list_tuple)), required=False)
+    nin = fields.Dict(fields.String(), fields.List(fields.Field(validate=validate_not_dict_list_tuple)), required=False)
+    null = fields.List(fields.String(), required=False)
+    not_null = fields.List(fields.String(), required=False)
+    or_ = fields.Dict(fields.String(), fields.Field(validate=validate_not_dict_list_tuple), required=False)
+    substr = fields.Dict(fields.String(), fields.String(validate=validate_substr), required=False)
+
+
+def get_data_from_request_or_raise_validation_error(validator_schema: type, data: dict) -> dict:
+    """
+    This function is used to get the and validate it according to its validator schema and
+    return request data in dict form. Also, it is used to raise ValidationError (A Custom
+    Exception) and return a complete error msg.
+    :param validator_schema:
+    :param data:
+    :return:
+    """
+    try:
+        validator = validator_schema()
+        data = validator.load(data)
+    except ValidationError as err:
+        raise CustomValidationError(err)
+
+    return data
+
+
+def log_user_access(response):
+    """
+    This function is used by the flask app server to log each and every request in access_logger
+    :param response:
+    :return:
+    """
+    access_logger.info(
+        f"User IP Address: {request.remote_addr} \n"
+        f"Method: {request.method}\n"
+        f"Path: {request.path}\n"
+        f"Headers: {request.headers}"
+        f"Request Payload: {request.get_data(as_text=True)}\n"
+        f"Response data: {response.get_data(as_text=True)}\n"
+        f"Status code: {response.status_code}"
+    )
+    return response
+
+
 def add_filters_using_mapping(model: type, conditions: dict, filters: list, operator_key: str):
     """
     This function is used to update the filters using input and operators mapping.
@@ -99,12 +124,12 @@ def add_filters_using_mapping(model: type, conditions: dict, filters: list, oper
     :return:
     """
     operator_mapping = {
-        "equal": operator.eq,
-        "not_equal": operator.ne,
-        "less_than": operator.lt,
-        "less_than_or_equal": operator.le,
-        "greater_than": operator.gt,
-        "greater_than_or_equal": operator.ge,
+        "eq": operator.eq,
+        "ne": operator.ne,
+        "lt": operator.lt,
+        "lte": operator.le,
+        "gt": operator.gt,
+        "gte": operator.ge,
         # "contains": operator.contains,
         # "has_key": lambda x, y: y in x,
         # "any": any,
@@ -114,15 +139,15 @@ def add_filters_using_mapping(model: type, conditions: dict, filters: list, oper
     logical_or_filters = []
     for column, value in conditions.items():
         if hasattr(model, column):
-            if operator_key == "between":
+            if operator_key == "between":  # in mongodb we do not have any operator for between
                 filters.append(between(getattr(model, column), value[0], value[1]))
-            elif operator_key == "in_list":
+            elif operator_key == "in_":
                 filters.append(getattr(model, column).in_(value))
-            elif operator_key == "not_in_list":
+            elif operator_key == "nin":
                 filters.append(getattr(model, column).notin_(value))
-            elif operator_key == "logical_or":
+            elif operator_key == "or_":
                 logical_or_filters.append(getattr(model, column) == value)
-            elif operator_key == "like":
+            elif operator_key == "substr":
                 filters.append(getattr(model, column).like(value))
             else:
                 filters.append(operator_mapping[operator_key](getattr(model, column), value))
@@ -140,7 +165,7 @@ def add_filters_for_null_and_not_null(model: type, operator_key: str, conditions
     """
     for column in conditions:
         if hasattr(model, column):
-            if operator_key == "is_null":
+            if operator_key == "null":
                 filters.append(getattr(model, column) == None)  # noqa
             else:
                 filters.append(getattr(model, column) != None)  # noqa
@@ -154,11 +179,18 @@ def get_query_including_filters(db: SQLAlchemy, model: type, filter_dict: dict):
     :param filter_dict:
     :return:
     """
+    try:
+        validator = FiltersDataSchema()
+        filter_dict = validator.load(filter_dict)
+    except ValidationError as err:
+        return err
+
     query = db.session.query(model)
 
     filters = []
     for operator_key, conditions in filter_dict.items():
-        if operator_key == "is_null" or operator_key == "is_not_null":
+        # in mongodb we do not have any operator for null and not_null
+        if operator_key == "null" or operator_key == "not_null":
             add_filters_for_null_and_not_null(model, operator_key, conditions, filters)
         else:
             add_filters_using_mapping(model, conditions, filters, operator_key)
