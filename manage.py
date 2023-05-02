@@ -1,10 +1,9 @@
 from flask_migrate import MigrateCommand
 from flask_script import Command, Manager
 
-import settings
 from main import get_app
 
-app = get_app(settings.CONFIG)
+app = get_app()
 
 
 manager = Manager(app)

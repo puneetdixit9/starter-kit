@@ -1,3 +1,6 @@
+import os
+
+import yaml
 from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -8,12 +11,17 @@ from main.custom_exceptions.exception_handlers import handle_exception
 from main.db import db
 from main.logging_module.logger import get_handler
 from main.modules import api, jwt
-from main.utils import log_user_access
+from main.utils import construct_timedelta, log_user_access
+
+yaml.add_constructor("!timedelta", construct_timedelta)  # handle timedelta in yaml file.
 
 
-def get_app(config):
+def get_app(env=None):
     app = Flask(__name__)
-
+    if not env:
+        env = os.environ.get("FLASK_ENV", "development")
+    with open("config/config.yaml", "r") as f:
+        config = yaml.load(Loader=yaml.Loader, stream=f)[env]
     app.config.update(config)
     CORS(app)
     api.init_app(app)
