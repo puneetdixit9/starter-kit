@@ -2,7 +2,9 @@
 /shelf/
 **xml
 */venv/*
-*/logs/*
+/logs/
+/instance/
+/migrations/
 *.pyc
 *.log
 *.coverage
