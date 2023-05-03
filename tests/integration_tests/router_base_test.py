@@ -1,14 +1,14 @@
 import os
 import unittest
 
-import settings
-from app import get_app
 from src.database import db as _db
+
+from app import get_app
 from tests.integration_tests.test_utils import get_login_data, get_signup_data
 
 
 class BaseRouterTest(unittest.TestCase):
-    app = get_app(settings.TEST_CONFIG)
+    app = get_app()
 
     def setUp(self):
         self.app.config["TESTING"] = True

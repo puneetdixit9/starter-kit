@@ -1,5 +1,5 @@
 import operator
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from flask import request
 from flask_sqlalchemy import SQLAlchemy
@@ -194,15 +194,3 @@ def get_query_including_filters(db: SQLAlchemy, model: type, filter_dict: dict):
         else:
             add_filters_using_mapping(model, conditions, filters, operator_key)
     return query.filter(*filters)
-
-
-def construct_timedelta(loader, node):
-    """
-    A custom constructor that is used to parse the YAML tag !timedelta in the configuration
-    file and convert it into a Python timedelta object.
-    :param loader:
-    :param node:
-    :return:
-    """
-    value = loader.construct_scalar(node)
-    return timedelta(**{value.split()[1]: int(value.split()[0])})

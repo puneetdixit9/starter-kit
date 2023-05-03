@@ -5,7 +5,6 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 
-import settings
 from main.modules.auth.model import AuthUser
 from main.modules.jwt.model import TokenBlocklist
 
@@ -33,10 +32,11 @@ class JWTController:
         return TokenBlocklist.create({"jti": jti, "type": ttype, "user_id": user_id})
 
     @classmethod
-    def token_revoked_check(cls, jwt_header, jwt_payload: dict) -> TokenBlocklist or None:
+    def token_revoked_check(cls, jwt_header: type, jwt_payload: dict) -> TokenBlocklist or None:
         """
         This function is used to check the jwt token  is revoked or not (If it is present in
         the TokenBlocklist then it is revoked.)
+        :param jwt_header:
         :param jwt_payload:
         :return:
         """
@@ -52,12 +52,9 @@ class JWTController:
         :return:
         """
         identity = {"user_id": auth_user.id}
-        access_token = create_access_token(identity=identity)
-        refresh_token = create_refresh_token(identity=identity)
         return {
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "expire_in": settings.TOKEN_EXPIRE_IN * 60,
+            "access_token": create_access_token(identity=identity),
+            "refresh_token": create_refresh_token(identity=identity),
         }
 
     @classmethod
@@ -66,5 +63,4 @@ class JWTController:
         This function is used to get a new access token using refresh token.
         :return:
         """
-        access_token = create_access_token(identity=cls.get_user_identity())
-        return {"access_token": access_token, "expire_in": 60 * settings.TOKEN_EXPIRE_IN}
+        return {"access_token": create_access_token(identity=cls.get_user_identity())}
