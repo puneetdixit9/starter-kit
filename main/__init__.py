@@ -29,7 +29,7 @@ def get_app(env=None):
     jwt.init_app(app)
     Migrate(app, db)
 
-    # register all custom custom_exceptions
+    # register all custom exceptions
     for exc in CUSTOM_EXCEPTIONS:
         app.register_error_handler(exc[0], exc[1])
 

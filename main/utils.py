@@ -139,7 +139,7 @@ def add_filters_using_mapping(model: type, conditions: dict, filters: list, oper
     logical_or_filters = []
     for column, value in conditions.items():
         if hasattr(model, column):
-            if operator_key == "between":  # in mongodb we do not have any operator for between
+            if operator_key == "between":
                 filters.append(between(getattr(model, column), value[0], value[1]))
             elif operator_key == "in_":
                 filters.append(getattr(model, column).in_(value))
@@ -189,7 +189,6 @@ def get_query_including_filters(db: SQLAlchemy, model: type, filter_dict: dict):
 
     filters = []
     for operator_key, conditions in filter_dict.items():
-        # in mongodb we do not have any operator for null and not_null
         if operator_key == "null" or operator_key == "not_null":
             add_filters_for_null_and_not_null(model, operator_key, conditions, filters)
         else:
@@ -199,7 +198,8 @@ def get_query_including_filters(db: SQLAlchemy, model: type, filter_dict: dict):
 
 def construct_timedelta(loader, node):
     """
-    This function is used to convert timedelta string to timedelta object.
+    A custom constructor that is used to parse the YAML tag !timedelta in the configuration
+    file and convert it into a Python timedelta object.
     :param loader:
     :param node:
     :return:
