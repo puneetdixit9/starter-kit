@@ -1,5 +1,5 @@
 from marshmallow import Schema, ValidationError, fields, validates_schema
-from marshmallow.validate import ContainsOnly, Length, OneOf
+from marshmallow.validate import Length, OneOf
 
 
 class SignUpSchema(Schema):
@@ -9,13 +9,10 @@ class SignUpSchema(Schema):
 
     first_name = fields.String()
     last_name = fields.String()
-
     username = fields.String(required=True)
     email = fields.Email(required=True)
     role = fields.String(required=True, validate=OneOf(["user", "admin"]))
     password = fields.String(required=True, validate=Length(min=8))
-    gender = fields.String(validate=ContainsOnly(["male", "female", "other"]))
-    address = fields.String()
 
 
 class LogInSchema(Schema):
@@ -32,17 +29,8 @@ class LogInSchema(Schema):
         if not data.get("email") and not data.get("username"):
             raise ValidationError("At least one param is required from ['email', 'username']")
 
-
-class UpdateProfile(Schema):
-    """
-    Required schema to update user profile.
-    """
-
-    first_name = fields.String()
-    last_name = fields.String()
-    department = fields.String()
-    function = fields.String()
-    role = fields.String()
+        if not data.get("email") and not data.get("username"):
+            raise ValidationError("At least one param is required from ['email', 'username']")
 
 
 class UpdatePassword(Schema):

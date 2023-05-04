@@ -1,59 +1,56 @@
-# Define fixture her to make a fixture available to multiple test files
+import json
+import os
 
-# import uuid
-# from json import loads
-
-from pytest import fixture
+import pytest
 
 from main import get_app
 from main.db import db
-from main.modules.auth.controller import AuthUserController
-from main.modules.auth.model import AuthUser
-
-# --------
-# Fixtures
-# --------
 
 
-@fixture(scope="class")
-def test_user():
-    created_id = AuthUserController.create_new_user(
-        {"username": "testuser", "email": "testadmin@gmail.com", "password": "test_password", "role": "user"}
-    )
-    user = AuthUser.query.filter_by(id=created_id).first()
-    return user
+@pytest.fixture(scope="class")
+def app():
+    """
+    This is the fixture function for create the instance of app and to create all the db tables.
+    On teardown, it drops the tables.
+    :return:
+    """
+    app = get_app("test")
+    with app.app_context():
+        db.create_all()
+
+    yield app
+
+    with app.app_context():
+        db.drop_all()
 
 
-@fixture(scope="session", autouse=True)
-def test_client():
-    # Create a Flask app configured for testing
-    flask_app = get_app(env="test")
-
-    # Create a test client using the Flask application configured for testing
-    with flask_app.test_client() as testing_client:
-        # Establish an application context
-        with flask_app.app_context():
-            yield testing_client  # this is where the testing happens!
+@pytest.fixture(scope="class")
+def client(app):
+    """
+    This fixture function is used to create a test client of the app to execute the tests.
+    :param app:
+    :return:
+    """
+    return app.test_client()
 
 
-@fixture(scope="module")
-def init_database():
-    db.create_all()
+@pytest.fixture(scope="class")
+def load_data_from_file(app):
+    def _load_data(model, filepath):
+        """
+        This fixture function is used to read the data from a file and add that data into given model.
+        Model can be anything, you just have to pass a valid json file path for that model.
+        :param model:
+        :param filepath:
+        :return:
+        """
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        with app.app_context():
+            with open(os.path.join(basedir, filepath)) as f:
+                data = json.load(f)
+                for item in data:
+                    model_instance = model(**item)
+                    db.session.add(model_instance)
+                db.session.commit()
 
-
-# @fixture(scope="class")
-# def import_users():
-#     """
-#     Create new users data from data/users.json
-#     """
-#     with open("tests/data/users.json", "r") as user_file:
-#         users = loads(user_file.read())
-
-#     # Create the database and the database table
-#     db.create_all(bind_key="user")
-
-#     # store users in Users table
-
-#     for user in users:
-#         db.session.add(Users(**user, public_id=str(uuid.uuid4())))
-#     db.session.commit()
+    return _load_data

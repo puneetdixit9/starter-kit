@@ -11,11 +11,10 @@ class BaseModel(db.Model):
     updated_at = db.Column(db.DateTime, default=None, onupdate=db.func.now())
 
     @classmethod
-    def create(cls, data: dict, session=None) -> db.Model:
+    def create(cls, data: dict) -> db.Model:
         """
         This function is used to create the record.
         :param data:
-        :param session:
         :return:
         """
         record = cls(**data)
@@ -35,7 +34,7 @@ class BaseModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def delete(cls, filters: dict):
+    def delete(cls, **filters):
         """
         This function is used to delete the records based on filters.
         :param filters:
