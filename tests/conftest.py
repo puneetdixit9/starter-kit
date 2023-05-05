@@ -54,3 +54,23 @@ def load_data_from_file(app):
                 db.session.commit()
 
     return _load_data
+
+
+@pytest.fixture(scope="function")
+def nested_transaction(app):
+    """
+    This fixture function is used to create a nested transaction before running each test.
+    :param app:
+    :return:
+    """
+    with app.app_context():
+        connection = db.engine.connect()
+        transaction = connection.begin()
+        # db.session.begin_nested()
+
+        yield db.session
+
+        # db.session.rollback()
+        # db.session.close()
+        transaction.rollback()
+        connection.close()

@@ -1,9 +1,7 @@
 from main.custom_exceptions import RecordNotFoundError, UnauthorizedUserError
-from main.db import db
 from main.modules.address.model import Address
 from main.modules.auth.controller import AuthUserController
 from main.modules.auth.model import AuthUser
-from main.utils import get_query_including_filters
 
 
 class AddressController:
@@ -60,11 +58,6 @@ class AddressController:
         cls.required_checks(auth_user, address)
         address.update(updated_address)
         return {"msg": "success"}
-
-    @classmethod
-    def execute_filters(cls, filters):
-        query = get_query_including_filters(db, Address, filters)
-        return [address.serialize() for address in query.all()]
 
     @classmethod
     def delete_address(cls, address_id, auth_user):
