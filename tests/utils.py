@@ -4,7 +4,7 @@ def get_user_role_login_credentials() -> dict:
     :return:
     """
     return {
-        "email": "testuser2@xyz.com",
+        "email": "testuser@xyz.com",
         "password": "testpassword",
     }
 
@@ -14,12 +14,7 @@ def get_user_role_signup_data() -> dict:
     This function is used to return user role signup data
     :return:
     """
-    return {
-        "email": "testuser2@xyz.com",
-        "password": "testpassword",
-        "username": "test2user",
-        "role": "user",
-    }
+    return {"username": "testuser2", "email": "testuser2@xyz.com", "password": "testpassword", "role": "user"}
 
 
 def get_admin_role_login_credentials() -> dict:
@@ -28,7 +23,7 @@ def get_admin_role_login_credentials() -> dict:
     :return:
     """
     return {
-        "email": "testadmin2@xyz.com",
+        "email": "testadmin@xyz.com",
         "password": "testpassword",
     }
 
@@ -64,4 +59,14 @@ def get_address_data() -> dict:
         "house_no_and_street": "78, street 4",
         "country": "India",
         "pin_code": 121107,
+    }
+
+
+def get_update_profile_data():
+    return {
+        "first_name": "Test",
+        "last_name": "test last",
+        "department": "test department",
+        "function": "test function",
+        "role": "test role",
     }

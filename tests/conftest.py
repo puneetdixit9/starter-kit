@@ -56,21 +56,22 @@ def load_data_from_file(app):
     return _load_data
 
 
-@pytest.fixture(scope="function")
-def nested_transaction(app):
-    """
-    This fixture function is used to create a nested transaction before running each test.
-    :param app:
-    :return:
-    """
-    with app.app_context():
-        connection = db.engine.connect()
-        transaction = connection.begin()
-        # db.session.begin_nested()
+@pytest.fixture(scope="class")
+def load_data_to_model_using_controller_from_file(app):
+    def _load_data(controller_function, filepath):
+        """
+        This fixture function is used to read the data from a file and add that data into its table
+        through its controller function. you just have to pass a valid json file path and controller
+        function
+        :param controller_function: A function which is used to create record to a particular table.
+        :param filepath:
+        :return:
+        """
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        with app.app_context():
+            with open(os.path.join(basedir, filepath)) as f:
+                data = json.load(f)
+                for item in data:
+                    controller_function(item)
 
-        yield db.session
-
-        # db.session.rollback()
-        # db.session.close()
-        transaction.rollback()
-        connection.close()
+    return _load_data
