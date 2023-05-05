@@ -7,11 +7,11 @@ from marshmallow import Schema, ValidationError, fields
 from marshmallow.validate import Length
 from sqlalchemy import between, or_
 
-import settings
 from main.custom_exceptions import CustomValidationError
+from main.logging_module import INFO
 from main.logging_module.logger import get_logger
 
-access_logger = get_logger("access", settings.INFO)
+access_logger = get_logger("access", INFO)
 
 
 def validate_substr(v: str):
@@ -70,11 +70,13 @@ class FiltersDataSchema(Schema):
         fields.List(fields.Field(validate=validate_int_float_date), validate=Length(equal=2)),
         required=False,
     )
-    in_ = fields.Dict(fields.String(), fields.List(fields.Field(validate=validate_not_dict_list_tuple)), required=False)
+    op_in = fields.Dict(
+        fields.String(), fields.List(fields.Field(validate=validate_not_dict_list_tuple)), required=False
+    )
     nin = fields.Dict(fields.String(), fields.List(fields.Field(validate=validate_not_dict_list_tuple)), required=False)
     null = fields.List(fields.String(), required=False)
     not_null = fields.List(fields.String(), required=False)
-    or_ = fields.Dict(fields.String(), fields.Field(validate=validate_not_dict_list_tuple), required=False)
+    op_or = fields.Dict(fields.String(), fields.Field(validate=validate_not_dict_list_tuple), required=False)
     substr = fields.Dict(fields.String(), fields.String(validate=validate_substr), required=False)
 
 
@@ -141,11 +143,11 @@ def add_filters_using_mapping(model: type, conditions: dict, filters: list, oper
         if hasattr(model, column):
             if operator_key == "between":
                 filters.append(between(getattr(model, column), value[0], value[1]))
-            elif operator_key == "in_":
+            elif operator_key == "op_in":
                 filters.append(getattr(model, column).in_(value))
             elif operator_key == "nin":
                 filters.append(getattr(model, column).notin_(value))
-            elif operator_key == "or_":
+            elif operator_key == "op_or":
                 logical_or_filters.append(getattr(model, column) == value)
             elif operator_key == "substr":
                 filters.append(getattr(model, column).like(value))

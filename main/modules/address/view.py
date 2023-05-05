@@ -3,11 +3,7 @@ from flask_jwt_extended import jwt_required
 from flask_restx import Namespace, Resource
 
 from main.modules.address.controller import AddressController
-from main.modules.address.schema_validator import (
-    AddAddressSchema,
-    FiltersDataSchema,
-    UpdateAddressSchema,
-)
+from main.modules.address.schema_validator import AddAddressSchema, UpdateAddressSchema
 from main.modules.auth.controller import AuthUserController
 from main.utils import get_data_from_request_or_raise_validation_error
 
@@ -73,10 +69,6 @@ class AddressApi2(Resource):
         auth_user = AuthUserController.get_current_auth_user()
         response = AddressController.delete_address(address_id, auth_user)
         return jsonify(response)
-
-    def post(self, address_id: int):
-        data = get_data_from_request_or_raise_validation_error(FiltersDataSchema, request.json)
-        return jsonify(AddressController.execute_filters(data))
 
 
 address_namespace = Namespace("addresses", description="Address Operations")

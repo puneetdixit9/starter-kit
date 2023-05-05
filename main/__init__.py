@@ -4,11 +4,11 @@ from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
 
-import settings
 from config import config_by_name
 from main.custom_exceptions import CUSTOM_EXCEPTIONS
 from main.custom_exceptions.exception_handlers import handle_exception
 from main.db import db
+from main.logging_module import ERROR
 from main.logging_module.logger import get_handler
 from main.modules import api, jwt
 from main.utils import log_user_access
@@ -29,7 +29,7 @@ def get_app(env=None):
     for exc in CUSTOM_EXCEPTIONS:
         app.register_error_handler(exc[0], exc[1])
 
-    app.logger.addHandler(get_handler("exceptions", settings.ERROR))
+    app.logger.addHandler(get_handler("exceptions", ERROR))
     app.after_request(log_user_access)
     app.register_error_handler(Exception, lambda e: handle_exception(e, app))
 

@@ -76,7 +76,7 @@ class AddressController:
         """
         address = Address.query.filter_by(id=address_id).first()
         cls.required_checks(auth_user, address)
-        Address.delete({"id": address_id})
+        Address.delete(id=address_id)
         return {"msg": "success"}
 
     @classmethod

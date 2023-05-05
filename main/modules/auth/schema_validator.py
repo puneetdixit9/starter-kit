@@ -29,9 +29,6 @@ class LogInSchema(Schema):
         if not data.get("email") and not data.get("username"):
             raise ValidationError("At least one param is required from ['email', 'username']")
 
-        if not data.get("email") and not data.get("username"):
-            raise ValidationError("At least one param is required from ['email', 'username']")
-
 
 class UpdatePassword(Schema):
     """
