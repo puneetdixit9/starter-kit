@@ -62,6 +62,19 @@ def get_address_data() -> dict:
     }
 
 
+def get_updated_address_data() -> dict:
+    """
+    This function is used to get the updated address data.
+    :return:
+    """
+    return {
+        "type": "other",
+        "house_no_and_street": "123, street 9",
+        "country": "USA",
+        "pin_code": 111111,
+    }
+
+
 def get_update_profile_data():
     return {
         "first_name": "Test",
