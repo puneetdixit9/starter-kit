@@ -29,35 +29,3 @@ But you can try to run it using the below command.
 ```commandline
 pre-commit run
 ```
-
-
-## Unit testing
-1. Auth routers unit testing
-```commandline
-(venv) C:\Users\puneet dixit\Desktop\starter app>python -m unittest unit_testing.auth_router_tests.AuthRouterTest
-........
-----------------------------------------------------------------------
-Ran 8 tests in 1.349s
-
-OK
-```
-2. Main routers unit testing
-
-```commandline
-(venv) C:\Users\puneet dixit\Desktop\starter app>python -m unittest unit_testing.main_router_tests.MainRouterTest
-......
-----------------------------------------------------------------------
-Ran 6 tests in 1.173s
-
-OK
-```
-3. Database Models unit testing
-```commandline
-
-(venv) C:\Users\puneet dixit\Desktop\starter app>python -m unittest unit_testing.models_tests.ModelsTests
-..
-----------------------------------------------------------------------
-Ran 2 tests in 0.001s
-
-OK
-```
