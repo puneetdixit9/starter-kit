@@ -196,18 +196,3 @@ def get_query_including_filters(db: SQLAlchemy, model: type, filter_dict: dict):
         else:
             add_filters_using_mapping(model, conditions, filters, operator_key)
     return query.filter(*filters)
-
-
-# filters_dict = {
-#     "eq": {
-#         "type": "work",
-#     },
-#     "ne": {
-#         "name": "Puneet"
-#     },
-#     "between": {
-#         "age": [30, 50]
-#     }
-# }
-#
-# query = get_query_including_filters(db, Address, filters_dict)
