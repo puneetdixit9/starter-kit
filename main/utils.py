@@ -50,8 +50,9 @@ def validate_int_float_date(value: int | float | str):
         try:
             datetime.strptime(value, "%Y-%m-%d")
         except ValueError:
-            if not isinstance(value, (int, float)):
-                raise ValidationError(f"Value {value} must be an int, float, or str('yyyy-mm-dd')")
+            raise ValidationError(f"Value {value} must be an int, float, or str('yyyy-mm-dd')")
+    elif not isinstance(value, (int, float)):
+        raise ValidationError(f"Value {value} must be an int, float, or str('yyyy-mm-dd')")
 
 
 class FiltersDataSchema(Schema):
@@ -153,7 +154,8 @@ def add_filters_using_mapping(model: type, conditions: dict, filters: list, oper
                 filters.append(getattr(model, column).like(value))
             else:
                 filters.append(operator_mapping[operator_key](getattr(model, column), value))
-    filters.append(or_(*logical_or_filters))
+    if logical_or_filters:
+        filters.append(or_(*logical_or_filters))
 
 
 def add_filters_for_null_and_not_null(model: type, operator_key: str, conditions: dict, filters: list):

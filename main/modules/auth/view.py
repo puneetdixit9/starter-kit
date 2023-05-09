@@ -67,7 +67,7 @@ class Logout(Resource):
         This view function is used to log out the user.
         :return:
         """
-        return AuthUserController.logout()
+        return jsonify(AuthUserController.logout())
 
 
 auth_namespace = Namespace("auth", description="Auth Operations")

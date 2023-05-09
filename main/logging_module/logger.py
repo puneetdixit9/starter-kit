@@ -2,8 +2,11 @@ import logging
 import os
 
 LOGS_BASE_DIR = "logs"
-if not os.path.exists(LOGS_BASE_DIR):
-    os.makedirs(LOGS_BASE_DIR)
+
+
+def create_base_dir_if_not_exists():
+    if not os.path.exists(LOGS_BASE_DIR):
+        os.makedirs(LOGS_BASE_DIR)
 
 
 def get_handler(name: str, log_level=logging.INFO):
@@ -13,6 +16,7 @@ def get_handler(name: str, log_level=logging.INFO):
     :param log_level:
     :return:
     """
+    create_base_dir_if_not_exists()
     handler = logging.FileHandler(LOGS_BASE_DIR + f"/{name}.log")
     handler.setLevel(log_level)
     handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s: %(message)s"))
@@ -26,6 +30,7 @@ def get_logger(name: str, log_level=logging.INFO):
     :param log_level:
     :return:
     """
+    create_base_dir_if_not_exists()
     logger = logging.getLogger(name)
     logger.setLevel(log_level)
     handler = get_handler(name, log_level)

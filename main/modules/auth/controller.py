@@ -1,6 +1,5 @@
 import enum
 
-from flask import jsonify
 from sqlalchemy import or_
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -94,7 +93,7 @@ class AuthUserController:
         :return:
         """
         blocked_token = JWTController.block_jwt_token()
-        return jsonify(msg=f"{blocked_token.type.capitalize()} token successfully revoked")
+        return {"msg": f"{blocked_token.type.capitalize()} token successfully revoked"}
 
     @classmethod
     def refresh_access_token(cls) -> dict:

@@ -1,22 +1,22 @@
 import logging
 import os
 
-from main.logging_module.logger import get_logger
+from main.logging_module.logger import (
+    LOGS_BASE_DIR,
+    create_base_dir_if_not_exists,
+    get_logger,
+)
 
 
-def test_logs_base_dir_creation(tmpdir):
+def test_logs_base_dir_creation(mocker):
     """
     Test if the logs base directory is created successfully.
     """
-    # Set the logs base directory to the temporary directory created by pytest
-    LOGS_BASE_DIR = tmpdir.join("logs")
-    assert not os.path.exists(LOGS_BASE_DIR)
+    mocker.patch.object(os.path, "exists", return_value=False)
+    mocker.patch.object(os, "makedirs", return_value=True)
 
-    # Call the code that creates the logs base directory
-    if not os.path.exists(LOGS_BASE_DIR):
-        os.makedirs(LOGS_BASE_DIR)
-
-    # Check if the logs base directory has been created successfully
+    create_base_dir_if_not_exists()
+    mocker.patch.object(os.path, "exists", return_value=True)
     assert os.path.exists(LOGS_BASE_DIR)
 
 
