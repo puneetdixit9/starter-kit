@@ -1,6 +1,3 @@
-  SQLALCHEMY_DATABASE_URI: 'mysql+mysqlconnector://puneet:1m2p3k4n@localhost:3306/starter_kit'
-  JWT_SECRET_KEY: 'ee4c120c-e5ee-40cf-85ef-cc1505d936aa'
   JWT_ACCESS_TOKEN_EXPIRES: !timedelta '1440 minutes'
-  JWT_REFRESH_TOKEN_EXPIRES: !timedelta '1440 minutes'
-  SECRET_KEY: 'ee4c120c-e5ee-40cf-85ef-cc1505d936aa'
+  JWT_REFRESH_TOKEN_EXPIRES: !timedelta '10080 minutes'
   PROPAGATE_EXCEPTIONS: true

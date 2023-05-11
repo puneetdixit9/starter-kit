@@ -2,9 +2,15 @@ import os
 from datetime import timedelta
 
 import yaml
+from dotenv import load_dotenv
 from yaml.loader import Loader
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+
+
+dotenv_path = os.path.join(os.path.expanduser("~"), "starter-kit.env")
+load_dotenv(dotenv_path)
+
 env = os.getenv("FLASK_ENV") or "dev"
 
 
@@ -30,11 +36,11 @@ with open(os.path.join(basedir, "test.yaml")) as test_config_file:
 
 
 class Config:
-    SQLALCHEMY_DATABASE_URI = config.get("SQLALCHEMY_DATABASE_URI")
-    JWT_SECRET_KEY = config.get("JWT_SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    JWT_SECRET_KEY = os.environ.get("SECRET_KEY")
     JWT_ACCESS_TOKEN_EXPIRES = config.get("JWT_ACCESS_TOKEN_EXPIRES")
     JWT_REFRESH_TOKEN_EXPIRES = config.get("JWT_REFRESH_TOKEN_EXPIRES")
-    SECRET_KEY = config.get("SECRET_KEY")
+    SECRET_KEY = os.environ.get("SECRET_KEY")
     PROPAGATE_EXCEPTIONS = config.get("PROPAGATE_EXCEPTIONS")
 
 
@@ -48,11 +54,11 @@ class ProductionConfig(Config):
 
 class TestingConfig:
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = test_config.get("SQLALCHEMY_DATABASE_URI")
-    JWT_SECRET_KEY = test_config.get("JWT_SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("TESTING_DATABASE_URL")
+    JWT_SECRET_KEY = os.environ.get("SECRET_KEY")
     JWT_ACCESS_TOKEN_EXPIRES = test_config.get("JWT_ACCESS_TOKEN_EXPIRES")
     JWT_REFRESH_TOKEN_EXPIRES = test_config.get("JWT_REFRESH_TOKEN_EXPIRES")
-    SECRET_KEY = test_config.get("SECRET_KEY")
+    SECRET_KEY = os.environ.get("SECRET_KEY")
     PROPAGATE_EXCEPTIONS = test_config.get("PROPAGATE_EXCEPTIONS")
 
 
