@@ -67,7 +67,8 @@ pytest tests/filename.py::TestClass::test_method
 ```
 Output of pytest:
 ```doctest
-pytest
+PS C:\Users\PuneetDixit\Desktop\starter-kit> pytest
+
 =============================================================== test session starts ===============================================================
 platform win32 -- Python 3.10.9, pytest-7.3.0, pluggy-1.0.0
 rootdir: C:\Users\PuneetDixit\Desktop\user-login
@@ -111,7 +112,8 @@ coverage run --source=main -m pytest -v ./tests ; coverage report -m
 ```
 Output of coverage:
 ```doctest
-coverage run --source=main -m pytest -v ./tests ; coverage report -m
+PS C:\Users\PuneetDixit\Desktop\starter-kit> coverage run --source=main -m pytest -v ./tests ; coverage report -m
+
 =============================================================== test session starts ===============================================================
 platform win32 -- Python 3.10.9, pytest-7.3.0, pluggy-1.0.0 -- C:\Users\PuneetDixit\Desktop\Starter App\venv\Scripts\python.exe
 cachedir: .pytest_cache
@@ -235,4 +237,16 @@ No need to run any command manually. It will auto run on git commit command.
 But you can try to run it using the below command.
 ```commandline
 pre-commit run
+```
+Output:
+```commandline
+PS C:\Users\PuneetDixit\Desktop\starter-kit>  pre-commit run
+
+Trim Trailing Whitespace.................................................Passed
+Fix End of Files.........................................................Passed
+Isort (python)...........................................................Passed
+Black....................................................................Passed
+Flake8...................................................................Passed
+Unit tests and code coverage.............................................Passed
+Integration tests and code coverage......................................Passed
 ```
