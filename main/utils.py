@@ -7,9 +7,8 @@ from marshmallow import Schema, ValidationError, fields
 from marshmallow.validate import Length
 from sqlalchemy import between, or_
 
-from main.custom_exceptions import CustomValidationError
-from main.logging_module import INFO
-from main.logging_module.logger import get_logger
+from main.exceptions import CustomValidationError
+from main.logger import INFO, get_logger
 
 access_logger = get_logger("access", INFO)
 

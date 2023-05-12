@@ -2,8 +2,8 @@ import pytest
 from marshmallow import ValidationError
 from pytest import raises
 
-from main.custom_exceptions import CustomValidationError
 from main.db import db
+from main.exceptions import CustomValidationError
 from main.modules.address.model import Address
 from main.modules.auth.controller import AuthUserController
 from main.utils import (

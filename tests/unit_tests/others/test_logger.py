@@ -1,11 +1,7 @@
 import logging
 import os
 
-from main.logging_module.logger import (
-    LOGS_BASE_DIR,
-    create_base_dir_if_not_exists,
-    get_logger,
-)
+from main.logger import LOGS_BASE_DIR, create_base_dir_if_not_exists, get_logger
 
 
 def test_logs_base_dir_creation(mocker):

@@ -1,4 +1,4 @@
-from main.custom_exceptions import RecordNotFoundError, UnauthorizedUserError
+from main.exceptions import RecordNotFoundError, UnauthorizedUserError
 from main.modules.address.model import Address
 from main.modules.auth.controller import AuthUserController
 from main.modules.auth.model import AuthUser

@@ -1,6 +1,11 @@
 import logging
 import os
 
+ERROR = logging.ERROR
+INFO = logging.INFO
+WARNING = logging.WARNING
+
+
 LOGS_BASE_DIR = "logs"
 
 
@@ -9,7 +14,7 @@ def create_base_dir_if_not_exists():
         os.makedirs(LOGS_BASE_DIR)
 
 
-def get_handler(name: str, log_level=logging.INFO):
+def get_handler(name: str, log_level=INFO):
     """
     This function is used to get a logger handler.
     :param name:
@@ -23,7 +28,7 @@ def get_handler(name: str, log_level=logging.INFO):
     return handler
 
 
-def get_logger(name: str, log_level=logging.INFO):
+def get_logger(name: str, log_level=INFO):
     """
     This function is used to get a logger object.
     :param name:

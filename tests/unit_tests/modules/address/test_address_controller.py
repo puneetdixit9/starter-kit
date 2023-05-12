@@ -2,7 +2,7 @@ import pytest
 from flask_jwt_extended import create_access_token
 from pytest import raises
 
-from main.custom_exceptions import RecordNotFoundError, UnauthorizedUserError
+from main.exceptions import RecordNotFoundError, UnauthorizedUserError
 from main.modules.address.controller import AddressController
 from main.modules.address.model import Address
 from main.modules.auth.controller import AuthUserController

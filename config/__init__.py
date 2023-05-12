@@ -31,9 +31,6 @@ yaml.add_constructor("!timedelta", construct_timedelta)  # handle timedelta in y
 with open(os.path.join(basedir, env + ".yaml")) as config_file:
     config = yaml.load(config_file, Loader=Loader)
 
-with open(os.path.join(basedir, "test.yaml")) as test_config_file:
-    test_config = yaml.load(test_config_file, Loader=Loader)
-
 
 class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
@@ -43,23 +40,26 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY")
     PROPAGATE_EXCEPTIONS = config.get("PROPAGATE_EXCEPTIONS")
 
+    @classmethod
+    def serialize(cls):
+        return {
+            attr: getattr(cls, attr)
+            for attr in dir(cls)
+            if not callable(getattr(cls, attr)) and not attr.startswith("__")
+        }
 
-class DevelopmentConfig(Config):
+
+class DevConfig(Config):
     DEBUG = True
 
 
-class ProductionConfig(Config):
+class ProdConfig(Config):
     DEBUG = False
 
 
-class TestingConfig:
+class TestConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("TESTING_DATABASE_URL")
-    JWT_SECRET_KEY = os.environ.get("SECRET_KEY")
-    JWT_ACCESS_TOKEN_EXPIRES = test_config.get("JWT_ACCESS_TOKEN_EXPIRES")
-    JWT_REFRESH_TOKEN_EXPIRES = test_config.get("JWT_REFRESH_TOKEN_EXPIRES")
-    SECRET_KEY = os.environ.get("SECRET_KEY")
-    PROPAGATE_EXCEPTIONS = test_config.get("PROPAGATE_EXCEPTIONS")
 
 
-config_by_name = dict(dev=DevelopmentConfig, test=TestingConfig, prod=ProductionConfig)
+config_by_name = dict(dev=DevConfig.serialize(), test=TestConfig.serialize(), prod=ProdConfig.serialize())
