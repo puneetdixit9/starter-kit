@@ -1,3 +1,4 @@
   JWT_ACCESS_TOKEN_EXPIRES: !timedelta '1440 minutes'
   JWT_REFRESH_TOKEN_EXPIRES: !timedelta '10080 minutes'
   PROPAGATE_EXCEPTIONS: true
+  CACHE_DEFAULT_TIMEOUT: !timedelta '300 minutes'

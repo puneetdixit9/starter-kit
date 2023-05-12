@@ -5,6 +5,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 
 from config import config_by_name
+from main.cache import cache
 from main.db import db
 from main.exceptions import CUSTOM_EXCEPTIONS
 from main.exceptions.handlers import handle_exception
@@ -26,6 +27,7 @@ def get_app(env=None, config=None):
     api.init_app(app)
     db.init_app(app)
     jwt.init_app(app)
+    cache.init_app(app, config=config_by_name["cache"])
     Migrate(app, db)
 
     # register all custom exceptions
