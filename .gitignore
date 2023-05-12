@@ -4,7 +4,6 @@
 */venv/*
 /logs/
 /instance/
-/migrations/
 *.pyc
 *.log
 *.coverage
