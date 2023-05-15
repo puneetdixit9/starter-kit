@@ -9,7 +9,7 @@ def get_user_and_headers(app):
     with app.app_context():
         user_data = {"email": "test@example.com", "username": "testuser", "password": "testpassword", "role": "user"}
         user, error_data = AuthUserController.create_new_user(user_data)
-        access_token = create_access_token(identity={"user_id": user.id})
+        access_token = create_access_token(identity={"user_id": user.id, "role": user.role})
         headers = {"Authorization": f"Bearer {access_token}"}
         return user, headers
 

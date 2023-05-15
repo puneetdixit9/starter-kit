@@ -1,17 +1,19 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace
 
+from main.cache import cache
 from main.modules.user.controller import UserController
 from main.modules.user.schema_validator import UpdateProfile
-from main.utils import get_data_from_request_or_raise_validation_error
+from main.utils import BaseResource, get_data_from_request_or_raise_validation_error
 
 auth_router = Blueprint("auth", __name__)
 
 
-class Profile(Resource):
+class Profile(BaseResource):
     method_decorators = [jwt_required()]
 
+    @cache.cached(key_prefix=BaseResource.cache_key, timeout=60)
     def get(self):
         """
         This view function is used to get the profile of logged-in user.
@@ -26,12 +28,14 @@ class Profile(Resource):
         """
         data = get_data_from_request_or_raise_validation_error(UpdateProfile, request.json)
         UserController.update_user_profile(data)
+        self.clear_cache()
         return jsonify(msg="success")
 
 
-class Profiles(Resource):
+class Profiles(BaseResource):
     method_decorators = [jwt_required()]
 
+    @cache.cached(key_prefix=BaseResource.cache_key, timeout=60)
     def get(self):
         """
         This view function is used to get all user profiles.
@@ -40,9 +44,10 @@ class Profiles(Resource):
         return jsonify(UserController.get_profiles())
 
 
-class Profiles2(Resource):
+class Profiles2(BaseResource):
     method_decorators = [jwt_required()]
 
+    @cache.cached(key_prefix=BaseResource.cache_key, timeout=60)
     def get(self, user_id: int):
         """
         This function is used to get the profile by user_id.
@@ -59,6 +64,7 @@ class Profiles2(Resource):
         """
         data = get_data_from_request_or_raise_validation_error(UpdateProfile, request.json)
         UserController.update_user_profile(data, user_id)
+        self.clear_cache()
         return jsonify(msg="success")
 
 

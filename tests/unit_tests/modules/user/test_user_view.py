@@ -12,7 +12,7 @@ ADMIN_ROLE_ID = 2
 def get_user_and_headers(app, user_id: int = USER_ROLE_ID):
     with app.app_context():
         auth_user = AuthUser.query.filter_by(id=user_id).first()
-        access_token = create_access_token(identity={"user_id": user_id})
+        access_token = create_access_token(identity={"user_id": user_id, "role": "user"})
         headers = {"Authorization": f"Bearer {access_token}"}
         return auth_user, headers
 

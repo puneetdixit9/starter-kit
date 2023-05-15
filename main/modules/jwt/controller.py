@@ -23,7 +23,11 @@ class JWTController:
         return get_jwt_identity()
 
     @classmethod
-    def block_jwt_token(cls):
+    def block_jwt_token(cls) -> TokenBlocklist:
+        """
+        This function is used to block jwt token on logout.
+        :return:
+        """
         token = get_jwt()
         jti = token["jti"]
         ttype = token["type"]
@@ -51,7 +55,7 @@ class JWTController:
         :param auth_user:
         :return:
         """
-        identity = {"user_id": auth_user.id}
+        identity = {"user_id": auth_user.id, "role": auth_user.role}
         return {
             "access_token": create_access_token(identity=identity),
             "refresh_token": create_refresh_token(identity=identity),
