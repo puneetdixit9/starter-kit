@@ -19,14 +19,14 @@ CACHE_REDIS_DB=0
 * Migrate Database
 ```commandline
 flask db init
-flask db migrate
+flask db migrate -m "migration message"
 flask db upgrade
 ```
-If facing error like **Error: Target database is not up to date.**
+If facing error like **Error: Target database is not up-to-date.**
 in **flask db migrate** command then run these commands.
 ```commandline
 flask db stamp head
-flask db migrate
+flask db migrate -m "migration message"
 flask db upgrade
 ```
 * Run Server
