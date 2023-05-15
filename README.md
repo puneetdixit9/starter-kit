@@ -7,6 +7,15 @@
 ```commandline
 pip install -r requirements.txt
 ```
+* Create a file at **_/home_** path with name **_starter-kit.env_** with these keys.
+```doctest
+DATABASE_URL=mysql+mysqlconnector://puneet:1m2p3k4n@localhost:3306/starter_kit
+TESTING_DATABASE_URL=mysql+mysqlconnector://puneet:1m2p3k4n@localhost:3306/starter_kit_test
+SECRET_KEY=your secret key
+CACHE_REDIS_HOST=redis-host
+CACHE_REDIS_PORT=redis-port
+CACHE_REDIS_DB=0
+```
 * Migrate Database
 ```commandline
 flask db init
