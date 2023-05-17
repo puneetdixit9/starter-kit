@@ -29,6 +29,13 @@ flask db stamp head
 flask db migrate -m "migration message"
 flask db upgrade
 ```
+* Upgrade or Downgrade and particular migration version
+```commandline
+flask db upgrade 'migration_version'
+ ```
+```commandline
+flask db downgrade 'migration_version'
+```
 * Run Server
 ```commandline
 flask run
