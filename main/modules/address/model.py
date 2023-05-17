@@ -13,6 +13,7 @@ class Address(BaseModel):
     landmark = db.Column(db.String(50))
     country = db.Column(db.String(50), nullable=False)
     pin_code = db.Column(db.Integer, nullable=False)
+    std_code = db.Column(db.Integer, nullable=True)
     user_id = db.Column(db.ForeignKey("auth_user.id"))
 
     user = db.relationship("AuthUser", backref=db.backref("addresses", lazy=True))
