@@ -32,6 +32,12 @@ with open(os.path.join(basedir, env + ".yaml")) as config_file:
     config = yaml.load(config_file, Loader=Loader)
 
 
+def serialize(cls):
+    return {
+        attr: getattr(cls, attr) for attr in dir(cls) if not callable(getattr(cls, attr)) and not attr.startswith("__")
+    }
+
+
 class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
     JWT_SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -39,14 +45,6 @@ class Config:
     JWT_REFRESH_TOKEN_EXPIRES = config.get("JWT_REFRESH_TOKEN_EXPIRES")
     SECRET_KEY = os.environ.get("SECRET_KEY")
     PROPAGATE_EXCEPTIONS = config.get("PROPAGATE_EXCEPTIONS")
-
-    @classmethod
-    def serialize(cls):
-        return {
-            attr: getattr(cls, attr)
-            for attr in dir(cls)
-            if not callable(getattr(cls, attr)) and not attr.startswith("__")
-        }
 
 
 class DevConfig(Config):
@@ -62,4 +60,14 @@ class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get("TESTING_DATABASE_URL")
 
 
-config_by_name = dict(dev=DevConfig.serialize(), test=TestConfig.serialize(), prod=ProdConfig.serialize())
+class CacheConfig:
+    CACHE_TYPE = "redis"
+    CACHE_REDIS_HOST = os.environ.get("CACHE_REDIS_HOST")
+    CACHE_REDIS_PORT = os.environ.get("CACHE_REDIS_PORT")
+    CACHE_REDIS_DB = os.environ.get("CACHE_REDIS_DB")
+    CACHE_DEFAULT_TIMEOUT = config.get("CACHE_DEFAULT_TIMEOUT")
+
+
+config_by_name = dict(
+    dev=serialize(DevConfig), test=serialize(TestConfig), prod=serialize(ProdConfig), cache=serialize(CacheConfig)
+)

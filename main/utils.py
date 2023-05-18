@@ -1,12 +1,16 @@
 import operator
+import urllib
 from datetime import datetime
 
 from flask import request
+from flask_jwt_extended import get_jwt_identity
+from flask_restx import Resource
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema, ValidationError, fields
 from marshmallow.validate import Length
 from sqlalchemy import between, or_
 
+from main.cache import redis_client
 from main.exceptions import CustomValidationError
 from main.logger import INFO, get_logger
 
@@ -197,3 +201,27 @@ def get_query_including_filters(db: SQLAlchemy, model: type, filter_dict: dict):
         else:
             add_filters_using_mapping(model, conditions, filters, operator_key)
     return query.filter(*filters)
+
+
+class BaseResource(Resource):
+    @staticmethod
+    def cache_key() -> str:
+        """
+        This function is used to create a cache key according to path, logged-in user, and request params.
+        :return: str
+        """
+        args = request.args
+        path = request.path + "?"
+        if "Authorization" in request.headers:
+            path += f"user_role={get_jwt_identity()['role']}&"
+        key = path + urllib.parse.urlencode([(k, v) for k in sorted(args) for v in sorted(args.getlist(k))])
+        return key
+
+    def clear_cache(self):
+        """
+        This function is used to remove all caching keys of a particular path.
+        :return:
+        """
+        key_pattern = "flask_cache_" + request.path + "*"
+        for key in redis_client.scan_iter(match=key_pattern):
+            redis_client.delete(key)

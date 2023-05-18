@@ -18,3 +18,5 @@ flask-restx==1.1.0
 mysql-connector-python==8.0.33
 PyYAML~=6.0
 alembic~=1.10.3
+Flask-Caching==2.0.2
+redis==4.5.5

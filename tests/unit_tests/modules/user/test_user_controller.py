@@ -9,7 +9,7 @@ ADMIN_ROLE_ID = 2
 
 
 def get_header(user_id: int = USER_ROLE_ID):
-    access_token = create_access_token(identity={"user_id": user_id})
+    access_token = create_access_token(identity={"user_id": user_id, "role": "user"})
     header = {"Authorization": f"Bearer {access_token}"}
     return header
 
