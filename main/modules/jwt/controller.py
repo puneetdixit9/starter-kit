@@ -1,3 +1,5 @@
+import os
+
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -5,6 +7,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 
+from config import config_by_name
 from main.modules.auth.model import AuthUser
 from main.modules.jwt.model import TokenBlocklist
 
@@ -59,6 +62,7 @@ class JWTController:
         return {
             "access_token": create_access_token(identity=identity),
             "refresh_token": create_refresh_token(identity=identity),
+            "expire_in": config_by_name[os.getenv("FLASK_ENV") or "dev"]["JWT_ACCESS_TOKEN_EXPIRES"].total_seconds(),
         }
 
     @classmethod
@@ -67,4 +71,7 @@ class JWTController:
         This function is used to get a new access token using refresh token.
         :return:
         """
-        return {"access_token": create_access_token(identity=cls.get_user_identity())}
+        return {
+            "access_token": create_access_token(identity=cls.get_user_identity()),
+            "expire_in": config_by_name[os.getenv("FLASK_ENV") or "dev"]["JWT_ACCESS_TOKEN_EXPIRES"].total_seconds(),
+        }
