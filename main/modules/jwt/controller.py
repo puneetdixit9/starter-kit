@@ -62,7 +62,10 @@ class JWTController:
         return {
             "access_token": create_access_token(identity=identity),
             "refresh_token": create_refresh_token(identity=identity),
-            "expire_in": config_by_name[os.getenv("FLASK_ENV") or "dev"]["JWT_ACCESS_TOKEN_EXPIRES"].total_seconds(),
+            "expires": str(
+                int(config_by_name[os.getenv("FLASK_ENV") or "dev"]["JWT_ACCESS_TOKEN_EXPIRES"].total_seconds())
+            ),
+            "token_type": "bearer",
         }
 
     @classmethod
@@ -73,5 +76,5 @@ class JWTController:
         """
         return {
             "access_token": create_access_token(identity=cls.get_user_identity()),
-            "expire_in": config_by_name[os.getenv("FLASK_ENV") or "dev"]["JWT_ACCESS_TOKEN_EXPIRES"].total_seconds(),
+            "expires": config_by_name[os.getenv("FLASK_ENV") or "dev"]["JWT_ACCESS_TOKEN_EXPIRES"].total_seconds(),
         }
