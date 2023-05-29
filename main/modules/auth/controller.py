@@ -23,8 +23,7 @@ class AuthUserController:
     @classmethod
     def get_current_auth_user(cls) -> AuthUser:
         """
-        This function is used to get the auth user object of current logged-in user based on jwt
-        token in request headers.
+        Get current logged-in user.
         :return AuthUser:
         """
         identity = JWTController.get_user_identity()
