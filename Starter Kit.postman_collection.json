@@ -159,12 +159,12 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY4MzI1NzA2MywianRpIjoiMGU4ZDk2MDYtMGJiMS00ODI5LWJhNjktYjc3MWI4MzVhMTYwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJ1c2VyX2lkIjozfSwibmJmIjoxNjgzMjU3MDYzLCJleHAiOjE2ODMzNDM0NjN9.k_dpJsdyrIe78lmxGcuw8zY5Qy5F71BSNvOCk94go14",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY4NTEwODE1OSwianRpIjoiMjIxYWFhNWItMTRiNS00MGRiLWEwMzMtNTZhYmEwNGRkZmJjIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOnsidXNlcl9pZCI6IjY0NzBiNWI5ZmVkMWM2NGZhOWVmNzcxYiIsInJvbGUiOiJhZG1pbiJ9LCJuYmYiOjE2ODUxMDgxNTksImV4cCI6MTY4NTcxMjk1OX0.e_VTpYNd-41KH14js6c2Nure54NFy6--nhqts_JIjgA",
 							"type": "string"
 						}
 					]
 				},
-				"method": "DELETE",
+				"method": "GET",
 				"header": [],
 				"url": {
 					"raw": "http://127.0.0.1:5000/auth/logout",

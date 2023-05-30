@@ -62,9 +62,9 @@ class TestConfig(Config):
 
 class CacheConfig:
     CACHE_TYPE = "redis"
-    CACHE_REDIS_HOST = os.environ.get("CACHE_REDIS_HOST")
-    CACHE_REDIS_PORT = os.environ.get("CACHE_REDIS_PORT")
-    CACHE_REDIS_DB = os.environ.get("CACHE_REDIS_DB")
+    CACHE_REDIS_HOST = os.environ.get("CACHE_REDIS_HOST") or "localhost"
+    CACHE_REDIS_PORT = os.environ.get("CACHE_REDIS_PORT") or 6379
+    CACHE_REDIS_DB = os.environ.get("CACHE_REDIS_DB") or 0
     CACHE_DEFAULT_TIMEOUT = config.get("CACHE_DEFAULT_TIMEOUT")
 
 

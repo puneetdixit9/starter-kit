@@ -100,5 +100,5 @@ def test_get_access_token_using_refresh_token(client, add_fixtures):
 
 def test_logout(client, add_fixtures):
     headers = get_headers(client, with_refresh_token=True)
-    response = client.delete("/auth/logout", headers=headers)
+    response = client.get("/auth/logout", headers=headers)
     assert response.status_code == 200

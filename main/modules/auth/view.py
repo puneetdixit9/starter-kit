@@ -62,7 +62,7 @@ class ChangePassword(Resource):
 class Logout(Resource):
     method_decorators = [jwt_required(verify_type=False)]
 
-    def delete(self):
+    def get(self):
         """
         This view function is used to log out the user.
         :return:

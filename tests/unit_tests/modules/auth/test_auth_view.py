@@ -122,7 +122,7 @@ class TestLogout:
         mocker.patch.object(AuthUserController, "logout", return_value={})
 
         with app.test_request_context("/auth/logout"):
-            response = self.api.delete()
+            response = self.api.get()
 
         assert isinstance(response, Response)
         assert response.status_code == 200
