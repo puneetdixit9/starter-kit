@@ -10,8 +10,7 @@ class UserController:
     @classmethod
     def get_profile(cls, user_id: int = None) -> dict:
         """
-        This function is used to get the profile of user by user_id, If user_id is not provided then it
-        will use current logged-in user id.
+        To get the profile of user.
         :return:
         """
         if not user_id:
@@ -22,7 +21,7 @@ class UserController:
     @classmethod
     def update_user_profile(cls, user_data: dict, user_id: int = None):
         """
-        This function is used to update the profile.
+        To update the profile.
         :param user_id:
         :param user_data:
         :return:
@@ -35,7 +34,7 @@ class UserController:
     @classmethod
     def get_profiles(cls) -> list[dict]:
         """
-        This function is used to get all user profiles.
+        To get all user profiles.
         :return:
         """
         users = User.query.all()

@@ -14,7 +14,7 @@ class AddressApi(CacheResource):
 
     def get(self):
         """
-        This function is used to get the list of addresses.
+        To get the list of addresses.
         :return:
         """
         auth_user = AuthUserController.get_current_auth_user()
@@ -23,7 +23,7 @@ class AddressApi(CacheResource):
 
     def post(self):
         """
-        This function is used to add new address to the database.
+        To add new address to the database.
         :return:
         """
         auth_user = AuthUserController.get_current_auth_user()
@@ -42,7 +42,7 @@ class AddressApi2(CacheResource):
 
     def get(self, address_id: int):
         """
-        This function is used to get the particular address by address_id
+        To get the particular address by address_id
         :param address_id:
         :return:
         """
@@ -52,7 +52,7 @@ class AddressApi2(CacheResource):
 
     def put(self, address_id: int):
         """
-        This function is used to update the address by address_id
+        To update the address by address_id
         :param address_id:
         :return:
         """
@@ -63,7 +63,7 @@ class AddressApi2(CacheResource):
 
     def delete(self, address_id: int):
         """
-        This function is used to delete the address by address_id.
+        To delete the address by address_id.
         :param address_id:
         :return:
         """

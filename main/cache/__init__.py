@@ -20,7 +20,7 @@ redis_client = StrictRedis(
 
 def cache_key() -> str:
     """
-    This function is used to create a cache key according to path, logged-in user, and request params.
+    To create a cache key according to path, logged-in user, and request params.
     :return: str
     """
     args = request.args
@@ -33,7 +33,7 @@ def cache_key() -> str:
 
 def clear_cache():
     """
-    This function is used to remove all caching keys of a particular path.
+    To remove all caching keys of a particular path.
     :return:
     """
     key_pattern = "flask_cache_" + request.path + "*"

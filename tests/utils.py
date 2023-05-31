@@ -1,6 +1,6 @@
 def get_user_role_login_credentials() -> dict:
     """
-    This function is used to return user role login credentials
+    To return user role login credentials
     :return:
     """
     return {
@@ -11,7 +11,7 @@ def get_user_role_login_credentials() -> dict:
 
 def get_user_role_signup_data() -> dict:
     """
-    This function is used to return user role signup data
+    To return user role signup data
     :return:
     """
     return {"username": "testuser2", "email": "testuser2@xyz.com", "password": "testpassword", "role": "user"}
@@ -19,7 +19,7 @@ def get_user_role_signup_data() -> dict:
 
 def get_admin_role_login_credentials() -> dict:
     """
-    This function is used to return admin role login credentials
+    To return admin role login credentials
     :return:
     """
     return {
@@ -30,7 +30,7 @@ def get_admin_role_login_credentials() -> dict:
 
 def get_admin_role_signup_data() -> dict:
     """
-    This function is used to return admin role signup data
+    To return admin role signup data
     :return:
     """
     return {
@@ -43,7 +43,7 @@ def get_admin_role_signup_data() -> dict:
 
 def get_update_password_data() -> dict:
     """
-    This function is used to return update password data.
+    To return update password data.
     :return:
     """
     return {"old_password": "testpassword", "new_password": "updatedtestpassword"}
@@ -51,7 +51,7 @@ def get_update_password_data() -> dict:
 
 def get_address_data() -> dict:
     """
-    This function is used to get the address data.
+    To get the address data.
     :return:
     """
     return {
@@ -64,7 +64,7 @@ def get_address_data() -> dict:
 
 def get_updated_address_data() -> dict:
     """
-    This function is used to get the updated address data.
+    To get the updated address data.
     :return:
     """
     return {

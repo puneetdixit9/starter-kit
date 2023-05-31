@@ -11,8 +11,8 @@ class SignUpSchema(Schema):
     last_name = fields.String()
     username = fields.String(required=True)
     email = fields.Email(required=True)
-    role = fields.String(required=True, validate=OneOf(["user", "admin"]))
-    password = fields.String(required=True, validate=Length(min=8))
+    role = fields.String(required=True, validate=OneOf(["user", "admin"]))  # noqa
+    password = fields.String(required=True, validate=Length(min=8))  # noqa
 
 
 class LogInSchema(Schema):
@@ -22,7 +22,7 @@ class LogInSchema(Schema):
 
     username = fields.String()
     email = fields.Email()
-    password = fields.String(required=True, validate=Length(min=8))
+    password = fields.String(required=True, validate=Length(min=8))  # noqa
 
     @validates_schema
     def validate_at_least_one_email_and_username(self, data, **kwargs):
@@ -36,4 +36,4 @@ class UpdatePassword(Schema):
     """
 
     old_password = fields.String(required=True)
-    new_password = fields.String(required=True, validate=Length(min=8))
+    new_password = fields.String(required=True, validate=Length(min=8))  # noqa

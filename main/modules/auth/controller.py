@@ -8,10 +8,6 @@ from main.modules.jwt.controller import JWTController
 
 
 class AuthUserController:
-    """
-    AuthUserController is used to handle all operations related to auth user.
-    """
-
     class ROLES(enum.Enum):
         """
         ROLE is an enum of valid roles in the system.
@@ -32,8 +28,7 @@ class AuthUserController:
     @classmethod
     def create_new_user(cls, user_data: dict) -> (AuthUser, dict):
         """
-        This function is used to create new user in the auth user table. Also, it is used to check if
-        username or email already exists or not.
+        To create new user
         :param user_data:
         :return (AuthUser, error_data):
         """
@@ -52,7 +47,7 @@ class AuthUserController:
     @classmethod
     def update_user_password(cls, update_password_data: dict) -> (dict, str):
         """
-        This function is used to change the password.
+        To update user password.
         :param update_password_data:
         :return dict, error_msg:
         """
@@ -67,8 +62,7 @@ class AuthUserController:
     @classmethod
     def get_token(cls, login_data: dict) -> [dict, str]:
         """
-        This function is used to get the token using email or username and password. It returns
-        access_token and refresh_token.
+        To get jwt bearer token on login
         :param login_data:
         :return dict:
         """
@@ -87,8 +81,7 @@ class AuthUserController:
     @classmethod
     def logout(cls):
         """
-        This function is used to revoke the access and refresh token when user logged-out and add
-        that token in blocklist so that no one can use that token.
+        On logout to block jwt token.
         :return:
         """
         blocked_token = JWTController.block_jwt_token()
@@ -97,7 +90,7 @@ class AuthUserController:
     @classmethod
     def refresh_access_token(cls) -> dict:
         """
-        This function is used to get a new access token.
+        To get a new access token using refresh token.
         :return:
         """
         return JWTController.get_access_token_from_refresh_token()

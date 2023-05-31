@@ -82,7 +82,7 @@ class FiltersDataSchema(Schema):
 
 def get_data_from_request_or_raise_validation_error(validator_schema: type, data: dict) -> dict:
     """
-    This function is used to get the and validate it according to its validator schema and
+    To get the and validate it according to its validator schema and
     return request data in dict form. Also, it is used to raise ValidationError (A Custom
     Exception) and return a complete error msg.
     :param validator_schema:
@@ -118,7 +118,7 @@ def log_user_access(response):
 
 def add_filters_using_mapping(model: type, conditions: dict, filters: list, operator_key: str):
     """
-    This function is used to update the filters using input and operators mapping.
+    To update the filters using input and operators mapping.
     :param model: The SQLAlchemy model to add filters to.
     :param conditions:
     :param filters:
@@ -159,7 +159,7 @@ def add_filters_using_mapping(model: type, conditions: dict, filters: list, oper
 
 def add_filters_for_null_and_not_null(model: type, operator_key: str, conditions: dict, filters: list):
     """
-    This function is used to add filters for null and not null values.
+    To add filters for null and not null values.
     :param model: The SQLAlchemy model to add filters to.
     :param operator_key:
     :param conditions:
@@ -176,7 +176,7 @@ def add_filters_for_null_and_not_null(model: type, operator_key: str, conditions
 
 def get_query_including_filters(db: SQLAlchemy, model: type, filter_dict: dict):
     """
-    This function is used to get the query with all filters
+    To get the query with all filters
     :param db:
     :param model: The SQLAlchemy model to add filters to.
     :param filter_dict:

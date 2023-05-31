@@ -13,7 +13,7 @@ class BaseModel(db.Model):
     @classmethod
     def create(cls, data: dict) -> db.Model:
         """
-        This function is used to create the record.
+        To create the record.
         :param data:
         :return:
         """
@@ -24,7 +24,7 @@ class BaseModel(db.Model):
 
     def update(self, data: dict):
         """
-        This function is used to update the record.
+        To update the record.
         :param data:
         :return:
         """
@@ -36,7 +36,7 @@ class BaseModel(db.Model):
     @classmethod
     def delete(cls, **filters):
         """
-        This function is used to delete the records based on filters.
+        To delete the records based on filters.
         :param filters:
         :return:
         """
@@ -45,7 +45,7 @@ class BaseModel(db.Model):
 
     def serialize(self) -> dict:
         """
-        This function is used to convert the model object to a dict.
+        To convert the model object to a dict.
         :return:
         """
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

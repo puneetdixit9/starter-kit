@@ -15,14 +15,14 @@ class Profile(CacheResource):
 
     def get(self):
         """
-        This view function is used to get the profile of logged-in user.
+        To get the profile of logged-in user.
         :return:
         """
         return jsonify(UserController.get_profile())
 
     def put(self):
         """
-        This view function is used to update the profile of current user.
+        To update the profile of current user.
         :return:
         """
         data = get_data_from_request_or_raise_validation_error(UpdateProfile, request.json)
@@ -35,7 +35,7 @@ class Profiles(CacheResource):
 
     def get(self):
         """
-        This view function is used to get all user profiles.
+        To get all user profiles.
         :return:
         """
         return jsonify(UserController.get_profiles())
@@ -46,7 +46,7 @@ class Profiles2(CacheResource):
 
     def get(self, user_id: int):
         """
-        This function is used to get the profile by user_id.
+        To get the profile by user_id.
         :param user_id:
         :return:
         """
@@ -54,7 +54,7 @@ class Profiles2(CacheResource):
 
     def put(self, user_id: int):
         """
-        This function is used to update the user profile by user_id
+        To update the user profile by user_id
         :param user_id:
         :return:
         """

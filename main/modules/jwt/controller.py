@@ -20,7 +20,7 @@ class JWTController:
     @classmethod
     def get_user_identity(cls):
         """
-        This function is used to get the identity of current logged-in user
+        To get the identity of current logged-in user
         :return:
         """
         return get_jwt_identity()
@@ -28,7 +28,7 @@ class JWTController:
     @classmethod
     def block_jwt_token(cls) -> TokenBlocklist:
         """
-        This function is used to block jwt token on logout.
+        To block jwt token on logout.
         :return:
         """
         token = get_jwt()
@@ -41,7 +41,7 @@ class JWTController:
     @classmethod
     def token_revoked_check(cls, jwt_header: type, jwt_payload: dict) -> TokenBlocklist or None:
         """
-        This function is used to check the jwt token  is revoked or not (If it is present in
+        To check the jwt token  is revoked or not (If it is present in
         the TokenBlocklist then it is revoked.)
         :param jwt_header:
         :param jwt_payload:
@@ -54,7 +54,7 @@ class JWTController:
     @classmethod
     def get_access_and_refresh_token(cls, auth_user: AuthUser) -> dict:
         """
-        This function is used to get the access and refresh token.
+        To get the access and refresh token.
         :param auth_user:
         :return:
         """
@@ -71,7 +71,7 @@ class JWTController:
     @classmethod
     def get_access_token_from_refresh_token(cls) -> dict:
         """
-        This function is used to get a new access token using refresh token.
+        To get a new access token using refresh token.
         :return:
         """
         return {

@@ -10,7 +10,7 @@ from main.utils import get_data_from_request_or_raise_validation_error
 class SignUp(Resource):
     def post(self):
         """
-        This view function is used to create a new user.
+        To create a new user.
         :return user_id:
         """
         data = get_data_from_request_or_raise_validation_error(SignUpSchema, request.json)
@@ -23,7 +23,7 @@ class SignUp(Resource):
 class Login(Resource):
     def post(self):
         """
-        This view function is used to get tokens (access and refresh) using valid user credentials.
+        To get tokens (access and refresh) using valid user credentials.
         :return:
         """
         data = get_data_from_request_or_raise_validation_error(LogInSchema, request.json)
@@ -38,7 +38,7 @@ class Refresh(Resource):
 
     def get(self):
         """
-        This view function is used to update the access token using a valid refresh token.
+        To update the access token using a valid refresh token.
         :return:
         """
         return jsonify(AuthUserController.refresh_access_token())
@@ -49,7 +49,7 @@ class ChangePassword(Resource):
 
     def put(self):
         """
-        This view function is used to change the password of logged-in user.
+        To change the password of logged-in user.
         :return:
         """
         data = get_data_from_request_or_raise_validation_error(UpdatePassword, request.json)
@@ -64,7 +64,7 @@ class Logout(Resource):
 
     def get(self):
         """
-        This view function is used to log out the user.
+        To log out the user.
         :return:
         """
         return jsonify(AuthUserController.logout())

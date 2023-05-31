@@ -16,7 +16,7 @@ def create_base_dir_if_not_exists():
 
 def get_handler(name: str, log_level=INFO):
     """
-    This function is used to get a logger handler.
+    To get a logger handler.
     :param name:
     :param log_level:
     :return:
@@ -30,7 +30,7 @@ def get_handler(name: str, log_level=INFO):
 
 def get_logger(name: str, log_level=INFO):
     """
-    This function is used to get a logger object.
+    To get a logger object.
     :param name:
     :param log_level:
     :return:
