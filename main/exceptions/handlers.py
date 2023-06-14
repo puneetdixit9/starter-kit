@@ -1,4 +1,5 @@
 from flask import jsonify, request
+from werkzeug.exceptions import NotFound
 
 
 def create_error_response(error):
@@ -15,6 +16,8 @@ def create_error_response(error):
 
 
 def handle_exception(e, app):
+    if isinstance(e, NotFound):
+        return jsonify(error=e.description), e.code
     request_data = {
         "method": request.method,
         "url": request.url,
