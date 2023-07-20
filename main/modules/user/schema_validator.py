@@ -8,6 +8,4 @@ class UpdateProfile(Schema):
 
     first_name = fields.String()
     last_name = fields.String()
-    department = fields.String()
-    function = fields.String()
     role = fields.String()
