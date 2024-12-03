@@ -1,8 +1,8 @@
 Flask==2.2.3
 Flask-SQLAlchemy==3.0.3
-marshmallow~=3.19.0
-PyJWT~=2.6.0
-Werkzeug~=2.2.3
+marshmallow==3.19.0
+PyJWT==2.6.0
+Werkzeug==2.2.3
 flask-jwt-extended==4.4.4
 flask-cors==3.0.10
 flake8==6.0.0
@@ -12,11 +12,11 @@ pytest==7.3.0
 pytest-mock==3.10.0
 python-dotenv==1.0.0
 pytest-cov==4.0.0
-SQLAlchemy~=2.0.6
+SQLAlchemy==2.0.36
 Flask-Migrate==4.0.4
 flask-restx==1.1.0
-mysql-connector-python==8.0.33
-PyYAML~=6.0
-alembic~=1.10.3
+PyYAML==6.0.2
+alembic==1.10.4
 Flask-Caching==2.0.2
 redis==4.5.5
+psycopg2-binary==2.9.10

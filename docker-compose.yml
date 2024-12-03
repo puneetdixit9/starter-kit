@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: starter-kit
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+
+  flask-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flask_app_container
+    environment:
+      FLASK_APP: app.py
+      FLASK_ENV: prod
+      DATABASE_URL: postgresql+psycopg2://admin:admin@host.docker.internal:5432/starter-kit
+      CACHE_REDIS_HOST: host.docker.internal
+      CACHE_REDIS_PORT: 6379
+
+    ports:
+      - "8000:5000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

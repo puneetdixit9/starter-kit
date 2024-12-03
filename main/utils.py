@@ -104,15 +104,16 @@ def log_user_access(response):
     :param response:
     :return:
     """
-    access_logger.info(
-        f"User IP Address: {request.remote_addr} \n"
-        f"Method: {request.method}\n"
-        f"Path: {request.path}\n"
-        f"Headers: {request.headers}"
-        f"Request Payload: {request.get_data(as_text=True)}\n"
-        f"Response data: {response.get_data(as_text=True)}\n"
-        f"Status code: {response.status_code}"
-    )
+    if "swaggerui" not in request.path:
+        access_logger.info(
+            f"User IP Address: {request.remote_addr} \n"
+            f"Method: {request.method}\n"
+            f"Path: {request.path}\n"
+            f"Headers: {request.headers}"
+            f"Request Payload: {request.get_data(as_text=True)}\n"
+            f"Response data: {response.get_data(as_text=True)}\n"
+            f"Status code: {response.status_code}"
+        )
     return response
 
 
