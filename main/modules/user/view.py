@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import jwt_required
-from flask_restx import Namespace
+# from flask_jwt_extended import jwt_required
+from flask_restx import Namespace, Resource
 
-from main.cache import CacheResource
+# from main.cache import CacheResource
 from main.modules.user.controller import UserController
 from main.modules.user.schema_validator import UpdateProfile
 from main.utils import get_data_from_request_or_raise_validation_error
@@ -10,28 +10,28 @@ from main.utils import get_data_from_request_or_raise_validation_error
 auth_router = Blueprint("auth", __name__)
 
 
-class Profile(CacheResource):
-    method_decorators = [jwt_required()]
+# class Profile(Resource):
+#     method_decorators = [jwt_required()]
 
-    def get(self):
-        """
-        To get the profile of logged-in user.
-        :return:
-        """
-        return jsonify(UserController.get_profile())
+#     def get(self):
+#         """
+#         To get the profile of logged-in user.
+#         :return:
+#         """
+#         return jsonify(UserController.get_profile())
 
-    def put(self):
-        """
-        To update the profile of current user.
-        :return:
-        """
-        data = get_data_from_request_or_raise_validation_error(UpdateProfile, request.json)
-        UserController.update_user_profile(data)
-        return jsonify(msg="success")
+#     def put(self):
+#         """
+#         To update the profile of current user.
+#         :return:
+#         """
+#         data = get_data_from_request_or_raise_validation_error(UpdateProfile, request.json)
+#         UserController.update_user_profile(data)
+#         return jsonify(msg="success")
 
 
-class Profiles(CacheResource):
-    method_decorators = [jwt_required()]
+class ProfileList(Resource):
+    # method_decorators = [jwt_required()]
 
     def get(self):
         """
@@ -41,8 +41,8 @@ class Profiles(CacheResource):
         return jsonify(UserController.get_profiles())
 
 
-class Profiles2(CacheResource):
-    method_decorators = [jwt_required()]
+class Profiles(Resource):
+    # method_decorators = [jwt_required()]
 
     def get(self, user_id: int):
         """
@@ -64,6 +64,5 @@ class Profiles2(CacheResource):
 
 
 user_namespace = Namespace("users", description="User Operations")
-user_namespace.add_resource(Profile, "/profile")
-user_namespace.add_resource(Profiles, "/profiles")
-user_namespace.add_resource(Profiles2, "/profiles/<int:user_id>")
+user_namespace.add_resource(ProfileList, "/profileList")
+user_namespace.add_resource(Profiles, "/profiles/<int:user_id>")

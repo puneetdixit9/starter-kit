@@ -1,5 +1,6 @@
 from main.modules.jwt.controller import JWTController
-from main.modules.user.model import User
+from main.modules.auth.model import AuthUser
+from main.modules.log_event.controller import LogEventController
 
 
 class UserController:
@@ -15,20 +16,25 @@ class UserController:
         """
         if not user_id:
             user_id = JWTController.get_user_identity()["user_id"]
-        user = User.query.filter_by(id=user_id).first()
-        return user.serialize()
+        user = AuthUser.query.filter_by(id=user_id).first()
+        user = user.serialize()
+        LogEventController.log_event("get_user_profile", user_id, user['tid'] , "NONE")
+        return user
 
     @classmethod
-    def update_user_profile(cls, user_data: dict, user_id: int = None):
+    def update_user_profile(cls, user_data: dict, user_id: int):
         """
         To update the profile.
         :param user_id:
         :param user_data:
         :return:
         """
-        if not user_id:
-            user_id = JWTController.get_user_identity()["user_id"]
-        user = User.query.filter_by(id=user_id).first()
+        # if not user_id:
+        #     user_id = JWTController.get_user_identity()["user_id"]
+        user = AuthUser.query.filter_by(id=user_id).first()
+        user_dict = vars(user)
+        print(user_dict)
+        LogEventController.log_event("update_user_profile", user_id, user_dict['tid'])
         user.update(user_data)
 
     @classmethod
@@ -37,5 +43,6 @@ class UserController:
         To get all user profiles.
         :return:
         """
-        users = User.query.all()
+        LogEventController.log_event("get_profiles", "ADMIN", "ADMIN" , "users/profileList")
+        users = AuthUser.query.all()
         return [user.serialize() for user in users]
